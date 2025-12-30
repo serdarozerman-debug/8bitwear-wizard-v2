@@ -1934,95 +1934,232 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     generateFrontViewSVG(color, label) {
         return `<svg width="800" height="1000" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <!-- Fabric texture pattern -->
-                <pattern id="fabric" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-                    <rect width="4" height="4" fill="${color}"/>
-                    <circle cx="1" cy="1" r="0.3" fill="${this.darkenColor(color, 3)}" opacity="0.3"/>
-                    <circle cx="3" cy="3" r="0.3" fill="${this.darkenColor(color, 3)}" opacity="0.3"/>
+                <!-- Enhanced fabric texture pattern -->
+                <pattern id="fabric" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                    <rect width="8" height="8" fill="${color}"/>
+                    <circle cx="2" cy="2" r="0.4" fill="${this.darkenColor(color, 5)}" opacity="0.2"/>
+                    <circle cx="6" cy="6" r="0.4" fill="${this.lightenColor(color, 3)}" opacity="0.15"/>
+                    <line x1="0" y1="4" x2="8" y2="4" stroke="${this.darkenColor(color, 3)}" stroke-width="0.3" opacity="0.1"/>
+                    <line x1="4" y1="0" x2="4" y2="8" stroke="${this.darkenColor(color, 3)}" stroke-width="0.3" opacity="0.1"/>
                 </pattern>
                 
-                <!-- Realistic gradient for depth -->
-                <linearGradient id="bodyGrad" x1="50%" y1="0%" x2="50%" y2="100%">
-                    <stop offset="0%" style="stop-color:${this.lightenColor(color, 10)};stop-opacity:1" />
-                    <stop offset="40%" style="stop-color:${color};stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:${this.darkenColor(color, 15)};stop-opacity:1" />
+                <!-- Realistic 3D gradient for body depth -->
+                <linearGradient id="bodyGrad" x1="30%" y1="0%" x2="70%" y2="0%">
+                    <stop offset="0%" style="stop-color:${this.darkenColor(color, 18)};stop-opacity:1" />
+                    <stop offset="25%" style="stop-color:${this.darkenColor(color, 8)};stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:${color};stop-opacity:1" />
+                    <stop offset="75%" style="stop-color:${this.lightenColor(color, 8)};stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:${this.darkenColor(color, 12)};stop-opacity:1" />
                 </linearGradient>
                 
-                <!-- Subtle shadow -->
+                <!-- Vertical gradient for natural lighting -->
+                <linearGradient id="verticalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#fff;stop-opacity:0.15" />
+                    <stop offset="30%" style="stop-color:#fff;stop-opacity:0.05" />
+                    <stop offset="70%" style="stop-color:#000;stop-opacity:0.05" />
+                    <stop offset="100%" style="stop-color:#000;stop-opacity:0.2" />
+                </linearGradient>
+                
+                <!-- Enhanced shadow with depth -->
                 <filter id="softShadow">
-                    <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-                    <feOffset dx="0" dy="2" result="offsetblur"/>
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+                    <feOffset dx="0" dy="3" result="offsetblur"/>
                     <feComponentTransfer>
-                        <feFuncA type="linear" slope="0.3"/>
+                        <feFuncA type="linear" slope="0.4"/>
                     </feComponentTransfer>
                     <feMerge>
                         <feMergeNode/>
                         <feMergeNode in="SourceGraphic"/>
                     </feMerge>
                 </filter>
+                
+                <!-- Fabric fold effect -->
+                <filter id="fabricFold">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" result="noise"/>
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+                </filter>
             </defs>
             
-            <!-- Clean background -->
+            <!-- Clean background with subtle gradient -->
             <rect width="800" height="1000" fill="#f5f5f7"/>
+            <rect width="800" height="1000" fill="url(#verticalGrad)" opacity="0.3"/>
             
-            <!-- T-Shirt body (realistic proportions) -->
+            <!-- Shadow on ground -->
+            <ellipse cx="400" cy="920" rx="180" ry="30" fill="#000" opacity="0.08"/>
+            
+            <!-- T-Shirt body (improved realistic proportions) -->
             <path d="M 250 200 
-                     L 200 250 
-                     L 200 700 
-                     Q 200 720 220 720
+                     Q 240 210 200 250 
+                     L 200 680 
+                     Q 200 710 220 720
+                     L 380 720
+                     Q 380 730 400 730
+                     Q 420 730 420 720
                      L 580 720
-                     Q 600 720 600 700
+                     Q 600 710 600 680
                      L 600 250
-                     L 550 200
-                     L 520 240
-                     Q 400 260 280 240
+                     Q 560 210 550 200
+                     L 530 230
+                     Q 520 250 500 260
+                     Q 450 270 400 270
+                     Q 350 270 300 260
+                     Q 280 250 270 230
                      Z" 
                   fill="url(#bodyGrad)" 
-                  stroke="#ddd" 
-                  stroke-width="2"
+                  stroke="${this.darkenColor(color, 25)}" 
+                  stroke-width="1.5"
                   filter="url(#softShadow)"/>
             
-            <!-- Sleeves (short sleeves) -->
-            <path d="M 200 250 L 150 320 L 180 380 L 200 350 Z" 
-                  fill="${this.darkenColor(color, 10)}" 
-                  stroke="#ddd" 
-                  stroke-width="1"/>
-            <path d="M 600 250 L 650 320 L 620 380 L 600 350 Z" 
-                  fill="${this.darkenColor(color, 10)}" 
-                  stroke="#ddd" 
-                  stroke-width="1"/>
+            <!-- Fabric texture overlay -->
+            <path d="M 250 200 
+                     Q 240 210 200 250 
+                     L 200 680 
+                     Q 200 710 220 720
+                     L 380 720
+                     Q 380 730 400 730
+                     Q 420 730 420 720
+                     L 580 720
+                     Q 600 710 600 680
+                     L 600 250
+                     Q 560 210 550 200
+                     L 530 230
+                     Q 520 250 500 260
+                     Q 450 270 400 270
+                     Q 350 270 300 260
+                     Q 280 250 270 230
+                     Z" 
+                  fill="url(#fabric)" 
+                  opacity="0.6"/>
             
-            <!-- Collar (crew neck) -->
-            <ellipse cx="400" cy="210" rx="45" ry="22" 
+            <!-- Vertical lighting effect -->
+            <path d="M 250 200 
+                     Q 240 210 200 250 
+                     L 200 680 
+                     Q 200 710 220 720
+                     L 380 720
+                     Q 380 730 400 730
+                     Q 420 730 420 720
+                     L 580 720
+                     Q 600 710 600 680
+                     L 600 250
+                     Q 560 210 550 200
+                     L 530 230
+                     Q 520 250 500 260
+                     Q 450 270 400 270
+                     Q 350 270 300 260
+                     Q 280 250 270 230
+                     Z" 
+                  fill="url(#verticalGrad)"/>
+            
+            <!-- Sleeves (short sleeves with fold details) -->
+            <path d="M 200 250 
+                     L 160 300 
+                     Q 150 330 155 350
+                     L 180 380 
+                     L 200 350 Z" 
+                  fill="${this.darkenColor(color, 15)}" 
+                  stroke="${this.darkenColor(color, 25)}" 
+                  stroke-width="1.5"/>
+            <path d="M 200 250 
+                     L 160 300 
+                     Q 150 330 155 350
+                     L 180 380 
+                     L 200 350 Z" 
+                  fill="url(#fabric)" 
+                  opacity="0.4"/>
+            
+            <path d="M 600 250 
+                     L 640 300 
+                     Q 650 330 645 350
+                     L 620 380 
+                     L 600 350 Z" 
+                  fill="${this.darkenColor(color, 15)}" 
+                  stroke="${this.darkenColor(color, 25)}" 
+                  stroke-width="1.5"/>
+            <path d="M 600 250 
+                     L 640 300 
+                     Q 650 330 645 350
+                     L 620 380 
+                     L 600 350 Z" 
+                  fill="url(#fabric)" 
+                  opacity="0.4"/>
+            
+            <!-- Sleeve highlights (3D effect) -->
+            <path d="M 170 305 Q 165 325 168 340" 
+                  stroke="${this.lightenColor(color, 20)}" 
+                  stroke-width="2" 
+                  opacity="0.4" 
+                  fill="none"/>
+            <path d="M 630 305 Q 635 325 632 340" 
+                  stroke="${this.darkenColor(color, 20)}" 
+                  stroke-width="2" 
+                  opacity="0.3" 
+                  fill="none"/>
+            
+            <!-- Collar (crew neck with depth) -->
+            <ellipse cx="400" cy="210" rx="48" ry="24" 
+                     fill="${this.darkenColor(color, 25)}" 
+                     stroke="${this.darkenColor(color, 30)}" 
+                     stroke-width="1.5"/>
+            <ellipse cx="400" cy="208" rx="45" ry="22" 
                      fill="${this.darkenColor(color, 20)}" 
-                     stroke="#ddd" 
+                     stroke="${this.darkenColor(color, 25)}" 
                      stroke-width="1"/>
-            <ellipse cx="400" cy="210" rx="35" ry="16" 
+            <ellipse cx="400" cy="210" rx="38" ry="18" 
                      fill="#f5f5f7"/>
+            <ellipse cx="400" cy="209" rx="35" ry="16" 
+                     fill="#fafafa"/>
             
-            <!-- Subtle seam lines -->
-            <line x1="400" y1="240" x2="400" y2="720" 
-                  stroke="${this.darkenColor(color, 5)}" 
+            <!-- Seam lines (center and sides) -->
+            <line x1="400" y1="270" x2="400" y2="720" 
+                  stroke="${this.darkenColor(color, 8)}" 
+                  stroke-width="1.5" 
+                  opacity="0.4"
+                  stroke-dasharray="5,5"/>
+            
+            <!-- Chest wrinkles/folds for realism -->
+            <path d="M 300 450 Q 350 448 400 450 Q 450 448 500 450" 
+                  stroke="${this.darkenColor(color, 12)}" 
                   stroke-width="1" 
-                  opacity="0.3"/>
+                  opacity="0.2" 
+                  fill="none"/>
+            <path d="M 320 550 Q 360 548 400 550 Q 440 548 480 550" 
+                  stroke="${this.darkenColor(color, 12)}" 
+                  stroke-width="1" 
+                  opacity="0.15" 
+                  fill="none"/>
             
-            <!-- Label tag (inside collar) -->
-            <rect x="385" y="215" width="30" height="12" 
+            <!-- Side shadows for depth -->
+            <path d="M 210 270 L 210 690 Q 210 710 215 715" 
+                  stroke="${this.darkenColor(color, 25)}" 
+                  stroke-width="12" 
+                  opacity="0.15" 
+                  fill="none"/>
+            <path d="M 590 270 L 590 690 Q 590 710 585 715" 
+                  stroke="${this.darkenColor(color, 20)}" 
+                  stroke-width="10" 
+                  opacity="0.12" 
+                  fill="none"/>
+            
+            <!-- Label tag (inside collar with realistic details) -->
+            <rect x="382" y="215" width="36" height="14" 
                   fill="#fff" 
                   stroke="#ccc" 
                   stroke-width="0.5" 
-                  rx="1"/>
-            <text x="400" y="223" 
+                  rx="1.5"/>
+            <text x="400" y="224" 
                   font-family="Arial, sans-serif" 
-                  font-size="6" 
-                  fill="#999" 
+                  font-size="7" 
+                  font-weight="600"
+                  fill="#666" 
                   text-anchor="middle">8BitWear</text>
             
             <!-- Product label at bottom -->
-            <text x="400" y="950" 
-                  font-family="Arial, sans-serif" 
-                  font-size="18" 
-                  fill="#999" 
+            <text x="400" y="960" 
+                  font-family="'Space Grotesk', Arial, sans-serif" 
+                  font-size="20" 
+                  font-weight="500"
+                  fill="#888" 
                   text-anchor="middle">${label}</text>
         </svg>`;
     }
@@ -2053,16 +2190,41 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         const isLeft = view === 'side-left';
         return `<svg width="800" height="1000" xmlns="http://www.w3.org/2000/svg">
             <defs>
+                <!-- Enhanced fabric texture for side view -->
+                <pattern id="fabricSide" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+                    <rect width="6" height="6" fill="${color}"/>
+                    <circle cx="2" cy="2" r="0.3" fill="${this.darkenColor(color, 5)}" opacity="0.2"/>
+                    <circle cx="4" cy="4" r="0.3" fill="${this.lightenColor(color, 3)}" opacity="0.15"/>
+                </pattern>
+                
+                <!-- Side gradient (left to right or right to left) -->
                 <linearGradient id="sideGrad" x1="${isLeft ? '0%' : '100%'}" y1="0%" x2="${isLeft ? '100%' : '0%'}" y2="0%">
-                    <stop offset="0%" style="stop-color:${this.darkenColor(color, 20)};stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:${color};stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:${this.lightenColor(color, 10)};stop-opacity:1" />
+                    <stop offset="0%" style="stop-color:${this.darkenColor(color, 25)};stop-opacity:1" />
+                    <stop offset="30%" style="stop-color:${this.darkenColor(color, 10)};stop-opacity:1" />
+                    <stop offset="70%" style="stop-color:${color};stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:${this.lightenColor(color, 15)};stop-opacity:1" />
                 </linearGradient>
+                
+                <!-- Sleeve gradient -->
+                <radialGradient id="sleeveGrad" cx="50%" cy="50%">
+                    <stop offset="0%" style="stop-color:${this.lightenColor(color, 5)};stop-opacity:1" />
+                    <stop offset="60%" style="stop-color:${this.darkenColor(color, 10)};stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:${this.darkenColor(color, 20)};stop-opacity:1" />
+                </radialGradient>
+                
+                <!-- Vertical gradient for lighting -->
+                <linearGradient id="verticalSideGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#fff;stop-opacity:0.1" />
+                    <stop offset="50%" style="stop-color:#fff;stop-opacity:0" />
+                    <stop offset="100%" style="stop-color:#000;stop-opacity:0.15" />
+                </linearGradient>
+                
+                <!-- Shadow filter -->
                 <filter id="softShadow2">
-                    <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-                    <feOffset dx="${isLeft ? '2' : '-2'}" dy="2" result="offsetblur"/>
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+                    <feOffset dx="${isLeft ? '3' : '-3'}" dy="3" result="offsetblur"/>
                     <feComponentTransfer>
-                        <feFuncA type="linear" slope="0.3"/>
+                        <feFuncA type="linear" slope="0.4"/>
                     </feComponentTransfer>
                     <feMerge>
                         <feMergeNode/>
@@ -2071,31 +2233,204 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
                 </filter>
             </defs>
             
-            <!-- Clean background -->
+            <!-- Clean background with subtle gradient -->
             <rect width="800" height="1000" fill="#f5f5f7"/>
+            <rect width="800" height="1000" fill="url(#verticalSideGrad)" opacity="0.3"/>
             
-            <!-- T-Shirt side view -->
+            <!-- Shadow on ground -->
+            <ellipse cx="400" cy="920" rx="150" ry="25" fill="#000" opacity="0.08"/>
+            
+            <!-- T-Shirt side view body -->
             ${isLeft 
-                ? `<path d="M 300 200 L 250 250 L 230 300 L 230 680 L 250 720 L 550 720 L 570 680 L 570 300 L 550 250 Z" 
-                        fill="url(#sideGrad)" stroke="#ddd" stroke-width="2" filter="url(#softShadow2)"/>`
-                : `<path d="M 500 200 L 550 250 L 570 300 L 570 680 L 550 720 L 250 720 L 230 680 L 230 300 L 250 250 Z" 
-                        fill="url(#sideGrad)" stroke="#ddd" stroke-width="2" filter="url(#softShadow2)"/>`
+                ? `<!-- Left side view (shoulder visible on right) -->
+                   <path d="M 320 200 
+                            Q 300 210 270 250 
+                            L 250 300 
+                            L 240 680 
+                            Q 240 710 260 720
+                            L 530 720
+                            Q 550 710 550 680
+                            L 540 300
+                            Q 520 240 510 220
+                            Z" 
+                         fill="url(#sideGrad)" 
+                         stroke="${this.darkenColor(color, 25)}" 
+                         stroke-width="1.5"
+                         filter="url(#softShadow2)"/>
+                   
+                   <!-- Fabric texture overlay -->
+                   <path d="M 320 200 
+                            Q 300 210 270 250 
+                            L 250 300 
+                            L 240 680 
+                            Q 240 710 260 720
+                            L 530 720
+                            Q 550 710 550 680
+                            L 540 300
+                            Q 520 240 510 220
+                            Z" 
+                         fill="url(#fabricSide)" 
+                         opacity="0.5"/>
+                   
+                   <!-- Vertical lighting -->
+                   <path d="M 320 200 
+                            Q 300 210 270 250 
+                            L 250 300 
+                            L 240 680 
+                            Q 240 710 260 720
+                            L 530 720
+                            Q 550 710 550 680
+                            L 540 300
+                            Q 520 240 510 220
+                            Z" 
+                         fill="url(#verticalSideGrad)"/>`
+                : `<!-- Right side view (shoulder visible on left) -->
+                   <path d="M 480 200 
+                            Q 500 210 530 250 
+                            L 550 300 
+                            L 560 680 
+                            Q 560 710 540 720
+                            L 270 720
+                            Q 250 710 250 680
+                            L 260 300
+                            Q 280 240 290 220
+                            Z" 
+                         fill="url(#sideGrad)" 
+                         stroke="${this.darkenColor(color, 25)}" 
+                         stroke-width="1.5"
+                         filter="url(#softShadow2)"/>
+                   
+                   <!-- Fabric texture overlay -->
+                   <path d="M 480 200 
+                            Q 500 210 530 250 
+                            L 550 300 
+                            L 560 680 
+                            Q 560 710 540 720
+                            L 270 720
+                            Q 250 710 250 680
+                            L 260 300
+                            Q 280 240 290 220
+                            Z" 
+                         fill="url(#fabricSide)" 
+                         opacity="0.5"/>
+                   
+                   <!-- Vertical lighting -->
+                   <path d="M 480 200 
+                            Q 500 210 530 250 
+                            L 550 300 
+                            L 560 680 
+                            Q 560 710 540 720
+                            L 270 720
+                            Q 250 710 250 680
+                            L 260 300
+                            Q 280 240 290 220
+                            Z" 
+                         fill="url(#verticalSideGrad)"/>`
             }
             
-            <!-- Sleeve (prominent) -->
+            <!-- Sleeve (bicep area - prominent and realistic) -->
             ${isLeft
-                ? `<ellipse cx="235" cy="400" rx="80" ry="140" fill="${this.darkenColor(color, 15)}" stroke="#ddd" stroke-width="2" opacity="0.9"/>`
-                : `<ellipse cx="565" cy="400" rx="80" ry="140" fill="${this.darkenColor(color, 15)}" stroke="#ddd" stroke-width="2" opacity="0.9"/>`
+                ? `<!-- Left sleeve (visible on the left side) -->
+                   <ellipse cx="255" cy="380" rx="70" ry="130" 
+                            fill="url(#sleeveGrad)" 
+                            stroke="${this.darkenColor(color, 25)}" 
+                            stroke-width="1.5"/>
+                   <ellipse cx="255" cy="380" rx="70" ry="130" 
+                            fill="url(#fabricSide)" 
+                            opacity="0.4"/>
+                   <!-- Sleeve highlight -->
+                   <ellipse cx="245" cy="370" rx="25" ry="50" 
+                            fill="${this.lightenColor(color, 25)}" 
+                            opacity="0.3"/>
+                   <!-- Sleeve shadow/fold -->
+                   <path d="M 255 310 Q 250 350 252 410" 
+                         stroke="${this.darkenColor(color, 30)}" 
+                         stroke-width="2" 
+                         opacity="0.3" 
+                         fill="none"/>`
+                : `<!-- Right sleeve (visible on the right side) -->
+                   <ellipse cx="545" cy="380" rx="70" ry="130" 
+                            fill="url(#sleeveGrad)" 
+                            stroke="${this.darkenColor(color, 25)}" 
+                            stroke-width="1.5"/>
+                   <ellipse cx="545" cy="380" rx="70" ry="130" 
+                            fill="url(#fabricSide)" 
+                            opacity="0.4"/>
+                   <!-- Sleeve highlight -->
+                   <ellipse cx="555" cy="370" rx="25" ry="50" 
+                            fill="${this.lightenColor(color, 25)}" 
+                            opacity="0.3"/>
+                   <!-- Sleeve shadow/fold -->
+                   <path d="M 545 310 Q 550 350 548 410" 
+                         stroke="${this.darkenColor(color, 30)}" 
+                         stroke-width="2" 
+                         opacity="0.3" 
+                         fill="none"/>`
             }
             
-            <!-- Collar hint -->
+            <!-- Collar/neckline hint (side view) -->
             ${isLeft
-                ? `<path d="M 520 210 Q 540 220 550 240" stroke="${this.darkenColor(color, 30)}" stroke-width="2" fill="none"/>`
-                : `<path d="M 280 210 Q 260 220 250 240" stroke="${this.darkenColor(color, 30)}" stroke-width="2" fill="none"/>`
+                ? `<path d="M 505 210 Q 520 220 528 240" 
+                         stroke="${this.darkenColor(color, 30)}" 
+                         stroke-width="2.5" 
+                         stroke-linecap="round"
+                         fill="none"/>
+                   <ellipse cx="508" cy="215" rx="8" ry="12" 
+                            fill="${this.darkenColor(color, 25)}"/>`
+                : `<path d="M 295 210 Q 280 220 272 240" 
+                         stroke="${this.darkenColor(color, 30)}" 
+                         stroke-width="2.5" 
+                         stroke-linecap="round"
+                         fill="none"/>
+                   <ellipse cx="292" cy="215" rx="8" ry="12" 
+                            fill="${this.darkenColor(color, 25)}"/>`
             }
             
-            <!-- Product label -->
-            <text x="400" y="950" font-family="Arial, sans-serif" font-size="18" fill="#999" text-anchor="middle">${label}</text>
+            <!-- Side seam line -->
+            ${isLeft
+                ? `<line x1="540" y1="300" x2="550" y2="680" 
+                         stroke="${this.darkenColor(color, 15)}" 
+                         stroke-width="1.5" 
+                         opacity="0.4"
+                         stroke-dasharray="8,6"/>`
+                : `<line x1="260" y1="300" x2="250" y2="680" 
+                         stroke="${this.darkenColor(color, 15)}" 
+                         stroke-width="1.5" 
+                         opacity="0.4"
+                         stroke-dasharray="8,6"/>`
+            }
+            
+            <!-- Body curve/fold for realism -->
+            ${isLeft
+                ? `<path d="M 260 450 Q 270 450 280 450" 
+                         stroke="${this.darkenColor(color, 12)}" 
+                         stroke-width="1.5" 
+                         opacity="0.25" 
+                         fill="none"/>
+                   <path d="M 520 450 Q 510 448 500 450" 
+                         stroke="${this.lightenColor(color, 8)}" 
+                         stroke-width="1.5" 
+                         opacity="0.2" 
+                         fill="none"/>`
+                : `<path d="M 540 450 Q 530 450 520 450" 
+                         stroke="${this.darkenColor(color, 12)}" 
+                         stroke-width="1.5" 
+                         opacity="0.25" 
+                         fill="none"/>
+                   <path d="M 280 450 Q 290 448 300 450" 
+                         stroke="${this.lightenColor(color, 8)}" 
+                         stroke-width="1.5" 
+                         opacity="0.2" 
+                         fill="none"/>`
+            }
+            
+            <!-- Product label at bottom -->
+            <text x="400" y="960" 
+                  font-family="'Space Grotesk', Arial, sans-serif" 
+                  font-size="20" 
+                  font-weight="500"
+                  fill="#888" 
+                  text-anchor="middle">${label}</text>
         </svg>`;
     }
     
