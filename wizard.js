@@ -1905,6 +1905,25 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     }
     
     getMockupUrl(view = 'front') {
+        // REAL PHOTO MOCKUPS for white t-shirt
+        const position = this.selectedPosition;
+        const product = this.selectedProduct;
+        
+        // Use real photos for white t-shirt
+        if (product === 'tshirt' && this.selectedColor === 'white') {
+            const mockupMap = {
+                'center-chest': 'mockups/center-chest.jpg',      // Resim 3: Full front view
+                'left-chest': 'mockups/left-chest.jpg',          // Resim 2: Upper close-up
+                'right-bicep': 'mockups/right-bicep.jpg',        // Resim 5: Left side (left sleeve visible)
+                'left-bicep': 'mockups/left-bicep.jpg'           // Resim 4: Right side (right sleeve visible)
+            };
+            
+            if (mockupMap[position]) {
+                return mockupMap[position];
+            }
+        }
+        
+        // Fallback to SVG for other colors/products
         // Color hex values
         const colors = {
             black: '#1a1a1a',
