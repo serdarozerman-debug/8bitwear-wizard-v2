@@ -229,6 +229,9 @@ class PixelWizard {
         this.bindEvents();
         this.updateProgress();
         
+        // Populate position selector for initial product
+        this.populatePositionSelector();
+        
         // Load initial mockup
         this.updateMockup();
         
