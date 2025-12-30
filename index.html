@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8BitWear - Pixel Art Wizard</title>
+    <link rel="stylesheet" href="wizard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="wizard-container">
+        <!-- Header -->
+        <header class="wizard-header">
+            <div class="logo">8BitWear</div>
+            <div class="tagline">Fotoğrafını Pixel Art'a Dönüştür</div>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-steps">
+                <div class="progress-step active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Yükle</span>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Dönüştür</span>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Önizle</span>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <span class="step-number">4</span>
+                    <span class="step-label">Satın Al</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wizard Steps Container -->
+        <div class="wizard-content">
+            
+            <!-- Step 1: Upload -->
+            <div class="wizard-step active" id="step1">
+                <div class="step-inner">
+                    <h2 class="step-title">
+                        <span class="pixel-icon">📸</span>
+                        Görselini Yükle
+                    </h2>
+                    <p class="step-description">
+                        Pixel art'a dönüştürmek istediğin fotoğrafı yükle. 
+                        Net ve yüksek çözünürlüklü görseller daha iyi sonuç verir.
+                    </p>
+                    
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-content">
+                            <div class="upload-icon">
+                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                            </div>
+                            <p class="upload-text">Sürükle & Bırak</p>
+                            <p class="upload-subtext">veya</p>
+                            <label class="upload-button">
+                                <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" hidden>
+                                Dosya Seç
+                            </label>
+                            <p class="upload-info">JPG, PNG, WEBP • Maks 10MB</p>
+                        </div>
+                        
+                        <!-- Preview (hidden until file selected) -->
+                        <div class="upload-preview" id="uploadPreview">
+                            <img id="previewImage" src="" alt="Önizleme">
+                            <button class="remove-image" id="removeImage">✕</button>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button class="btn btn-primary" id="btnToStep2" disabled>
+                            Devam Et
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Convert -->
+            <div class="wizard-step" id="step2">
+                <div class="step-inner">
+                    <h2 class="step-title">
+                        <span class="pixel-icon">🎮</span>
+                        Pixel Art'a Dönüştür
+                    </h2>
+                    
+                    <div class="convert-container">
+                        <!-- Original Image -->
+                        <div class="convert-panel">
+                            <div class="panel-label">Orijinal</div>
+                            <div class="panel-image">
+                                <img id="originalImage" src="" alt="Orijinal">
+                            </div>
+                        </div>
+
+                        <!-- Arrow -->
+                        <div class="convert-arrow">
+                            <div class="arrow-animation">
+                                <span>→</span>
+                            </div>
+                        </div>
+
+                        <!-- Pixel Art Result -->
+                        <div class="convert-panel">
+                            <div class="panel-label">Pixel Art</div>
+                            <div class="panel-image" id="pixelArtPanel">
+                                <!-- Loading State -->
+                                <div class="loading-state" id="loadingState">
+                                    <div class="pixel-loader">
+                                        <div class="pixel-block"></div>
+                                        <div class="pixel-block"></div>
+                                        <div class="pixel-block"></div>
+                                        <div class="pixel-block"></div>
+                                    </div>
+                                    <p class="loading-text">AI çalışıyor...</p>
+                                    <div class="loading-progress">
+                                        <div class="loading-bar" id="loadingBar"></div>
+                                    </div>
+                                </div>
+                                <!-- Result (hidden until ready) -->
+                                <img id="pixelArtImage" src="" alt="Pixel Art" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attempt Counter -->
+                    <div class="attempt-info" id="attemptInfo">
+                        <div class="attempt-counter">
+                            Kalan Deneme: <span id="attemptCount">3</span>/3
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="step-actions convert-actions" id="convertActions" style="display: none;">
+                        <button class="btn btn-secondary" id="btnRetry">
+                            <span class="btn-icon">🔄</span>
+                            Tekrar Dene
+                        </button>
+                        <button class="btn btn-primary" id="btnToStep3">
+                            Beğendim!
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </div>
+
+                    <!-- No attempts left -->
+                    <div class="no-attempts" id="noAttempts" style="display: none;">
+                        <p class="no-attempts-text">3 deneme hakkın doldu.</p>
+                        <div class="no-attempts-options">
+                            <button class="btn btn-secondary" id="btnUploadOwn">
+                                Kendi Pixel Art'ını Yükle
+                            </button>
+                            <button class="btn btn-ghost" id="btnCancel">
+                                Vazgeç
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Preview Mockup -->
+            <div class="wizard-step" id="step3">
+                <div class="step-inner">
+                    <h2 class="step-title">
+                        <span class="pixel-icon">👕</span>
+                        Ürünü Önizle
+                    </h2>
+                    <p class="step-description">
+                        Tasarımın ürün üzerinde nasıl görüneceğini incele.
+                    </p>
+
+                    <div class="preview-container">
+                        <!-- Mockup Display -->
+                        <div class="mockup-display">
+                            <div class="mockup-main">
+                                <img id="mockupImage" src="" alt="Ürün Önizleme">
+                                <div class="mockup-overlay" id="mockupOverlay">
+                                    <img id="mockupPixelArt" src="" alt="Pixel Art">
+                                </div>
+                            </div>
+                            <div class="mockup-views">
+                                <button class="view-btn active" data-view="front">Ön</button>
+                                <button class="view-btn" data-view="back">Arka</button>
+                                <button class="view-btn" data-view="detail">Detay</button>
+                            </div>
+                        </div>
+
+                        <!-- Product Options -->
+                        <div class="product-options">
+                            <!-- Product Type -->
+                            <div class="option-group">
+                                <label class="option-label">Ürün</label>
+                                <div class="product-type-selector">
+                                    <button class="type-btn active" data-type="tshirt">
+                                        <span class="type-icon">👕</span>
+                                        <span class="type-name">Tişört</span>
+                                        <span class="type-price">₺1.500</span>
+                                    </button>
+                                    <button class="type-btn" data-type="sweatshirt">
+                                        <span class="type-icon">🧥</span>
+                                        <span class="type-name">Sweatshirt</span>
+                                        <span class="type-price">₺2.500</span>
+                                    </button>
+                                    <button class="type-btn" data-type="hat">
+                                        <span class="type-icon">🧢</span>
+                                        <span class="type-name">Şapka</span>
+                                        <span class="type-price">₺1.200</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Position Selection -->
+                            <div class="option-group" id="positionGroup">
+                                <label class="option-label">Pozisyon: <span id="selectedPosition">Göğüs Ortası</span></label>
+                                <div class="position-selector" id="positionSelector">
+                                    <!-- Will be dynamically populated based on product type -->
+                                </div>
+                            </div>
+
+                            <!-- Color Selection -->
+                            <div class="option-group">
+                                <label class="option-label">Renk</label>
+                                <div class="color-selector">
+                                    <button class="color-btn active" data-color="black" style="--color: #1a1a1a" title="Siyah"></button>
+                                    <button class="color-btn" data-color="white" style="--color: #ffffff" title="Beyaz"></button>
+                                    <button class="color-btn" data-color="navy" style="--color: #1e3a5f" title="Lacivert"></button>
+                                    <button class="color-btn" data-color="gray" style="--color: #4a4a4a" title="Antrasit"></button>
+                                    <button class="color-btn" data-color="red" style="--color: #c41e3a" title="Kırmızı"></button>
+                                </div>
+                                <span class="selected-color" id="selectedColor">Siyah</span>
+                            </div>
+
+                            <!-- Size Selection -->
+                            <div class="option-group">
+                                <label class="option-label">Beden</label>
+                                <div class="size-selector">
+                                    <button class="size-btn" data-size="S">S</button>
+                                    <button class="size-btn" data-size="M">M</button>
+                                    <button class="size-btn active" data-size="L">L</button>
+                                    <button class="size-btn" data-size="XL">XL</button>
+                                    <button class="size-btn" data-size="XXL">XXL</button>
+                                </div>
+                                <a href="#" class="size-guide-link">📏 Beden Rehberi</a>
+                            </div>
+
+                            <!-- Summary -->
+                            <div class="option-summary">
+                                <div class="summary-row">
+                                    <span>Ürün</span>
+                                    <span id="summaryProduct">Tişört - Siyah - L</span>
+                                </div>
+                                <div class="summary-row total">
+                                    <span>Toplam</span>
+                                    <span id="summaryPrice">₺1.500</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button class="btn btn-secondary" id="btnBackToStep2">
+                            <span class="btn-arrow">←</span>
+                            Geri
+                        </button>
+                        <button class="btn btn-primary" id="btnToStep4">
+                            Satın Al
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Checkout -->
+            <div class="wizard-step" id="step4">
+                <div class="step-inner">
+                    <h2 class="step-title">
+                        <span class="pixel-icon">💳</span>
+                        Siparişi Tamamla
+                    </h2>
+
+                    <div class="checkout-container">
+                        <!-- Order Summary -->
+                        <div class="checkout-summary">
+                            <div class="summary-product">
+                                <div class="summary-image">
+                                    <img id="checkoutMockup" src="" alt="Ürün">
+                                </div>
+                                <div class="summary-details">
+                                    <h3 id="checkoutProductName">Pixel Art Tişört</h3>
+                                    <p id="checkoutProductOptions">Siyah • L Beden</p>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-pricing">
+                                <div class="pricing-row">
+                                    <span>Ürün</span>
+                                    <span id="checkoutProductPrice">₺1.500</span>
+                                </div>
+                                <div class="pricing-row">
+                                    <span>Kargo</span>
+                                    <span class="free-shipping">Ücretsiz</span>
+                                </div>
+                                <div class="pricing-row total">
+                                    <span>Toplam</span>
+                                    <span id="checkoutTotal">₺1.500</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Customer Information Form -->
+                        <div class="checkout-payment">
+                            <div class="payment-header">
+                                <span class="payment-secure">📋 Müşteri Bilgileri</span>
+                            </div>
+                            
+                            <form class="customer-form" id="customerForm">
+                                <div class="form-group">
+                                    <label for="customerName">Ad Soyad *</label>
+                                    <input type="text" id="customerName" name="customerName" placeholder="Adınız Soyadınız" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="customerEmail">Email *</label>
+                                    <input type="email" id="customerEmail" name="customerEmail" placeholder="ornek@email.com" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="customerPhone">Telefon *</label>
+                                    <input type="tel" id="customerPhone" name="customerPhone" placeholder="05XX XXX XX XX" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="customerAddress">Teslimat Adresi *</label>
+                                    <textarea id="customerAddress" name="customerAddress" rows="4" placeholder="Mahalle, Sokak, No, Daire, İlçe, İl" required></textarea>
+                                </div>
+                            </form>
+
+                            <!-- KVKK Consent -->
+                            <div class="consent-section">
+                                <label class="consent-checkbox">
+                                    <input type="checkbox" id="consentCheckbox">
+                                    <span class="checkmark"></span>
+                                    <span class="consent-text">
+                                        <a href="#">Gizlilik Politikası</a> ve <a href="#">KVKK Aydınlatma Metni</a>'ni 
+                                        okudum, kişisel verilerimin işlenmesine izin veriyorum.
+                                    </span>
+                                </label>
+                            </div>
+
+                            <button class="btn btn-primary btn-checkout" id="btnCompleteOrder" disabled>
+                                <span class="btn-icon">🎮</span>
+                                Siparişi Tamamla
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button class="btn btn-ghost" id="btnBackToStep3">
+                            <span class="btn-arrow">←</span>
+                            Geri Dön
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="wizard-footer">
+            <div class="footer-info">
+                <span>✓ Ücretsiz Kargo</span>
+                <span>✓ 1-3 Gün Üretim</span>
+                <span>✓ %100 Pamuk</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Load config first (contains API keys) -->
+    <script src="mockup-config.js"></script>
+    <script src="config.js"></script>
+    <script src="shopify-config.js"></script>
+    <script src="shopify-api.js"></script>
+    <script src="wizard.js"></script>
+</body>
+</html>

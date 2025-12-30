@@ -1,0 +1,26 @@
+{
+  "name": "8bitwear-wizard-v2",
+  "version": "2.0.0",
+  "description": "AI-powered pixel art generator for custom t-shirt designs",
+  "main": "shopify-proxy-server.js",
+  "scripts": {
+    "start": "node shopify-proxy-server.js",
+    "dev": "nodemon shopify-proxy-server.js",
+    "test": "echo \"No tests yet\""
+  },
+  "keywords": [
+    "shopify",
+    "pixel-art",
+    "openai",
+    "t-shirt"
+  ],
+  "author": "8BitWear",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.Python
+venv/
+env/
+
+# Environment
+.env
+.env.local
+*.env
+
+# API Keys & Secrets
+config.js
+shopify-config.js
+credentials.json
+token.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Test files
+test-*.png
+test-*.jpg
+test-*.stl
+uploads/
+
