@@ -68,6 +68,104 @@ const CONFIG = window.WIZARD_CONFIG || {
     }
 };
 
+// ==========================================
+// MOCKUP CONFIGURATION
+// ==========================================
+window.MOCKUP_CONFIG = {
+    tshirt: {
+        printAreas: {
+            'center-chest': {
+                top: 42,
+                left: 50,
+                width: 20,
+                maxWidth: 180,
+                transform: 'translate(-50%, 0)',
+                view: 'front'
+            },
+            'left-chest': {
+                top: 35,
+                left: 30,
+                width: 12,
+                maxWidth: 100,
+                transform: 'translate(-50%, 0)',
+                view: 'front'
+            },
+            'right-bicep': {
+                top: 35,
+                left: 65,
+                width: 15,
+                maxWidth: 120,
+                transform: 'translate(-50%, 0) rotate(-5deg)',
+                view: 'side-right'
+            },
+            'left-bicep': {
+                top: 35,
+                left: 35,
+                width: 15,
+                maxWidth: 120,
+                transform: 'translate(-50%, 0) rotate(5deg)',
+                view: 'side-left'
+            }
+        }
+    },
+    sweatshirt: {
+        printAreas: {
+            'center-chest': {
+                top: 42,
+                left: 50,
+                width: 22,
+                maxWidth: 200,
+                transform: 'translate(-50%, 0)',
+                view: 'front'
+            },
+            'left-chest': {
+                top: 35,
+                left: 28,
+                width: 14,
+                maxWidth: 110,
+                transform: 'translate(-50%, 0)',
+                view: 'front'
+            },
+            'right-bicep': {
+                top: 35,
+                left: 65,
+                width: 16,
+                maxWidth: 130,
+                transform: 'translate(-50%, 0) rotate(-5deg)',
+                view: 'side-right'
+            },
+            'left-bicep': {
+                top: 35,
+                left: 35,
+                width: 16,
+                maxWidth: 130,
+                transform: 'translate(-50%, 0) rotate(5deg)',
+                view: 'side-left'
+            }
+        }
+    },
+    hat: {
+        printAreas: {
+            'front': {
+                top: 45,
+                left: 50,
+                width: 35,
+                maxWidth: 150,
+                transform: 'translate(-50%, 0)',
+                view: 'front'
+            },
+            'side': {
+                top: 45,
+                left: 50,
+                width: 30,
+                maxWidth: 130,
+                transform: 'translate(-50%, 0)',
+                view: 'side'
+            }
+        }
+    }
+};
+
 class PixelWizard {
     constructor() {
         // State
@@ -102,19 +200,19 @@ class PixelWizard {
             red: 'Kırmızı'
         };
         
-        // Product positions
+        // Product positions (4 pozisyon: sol göğüs, orta göğüs, sağ pazu, sol pazu)
         this.productPositions = {
             tshirt: [
-                { id: 'center-chest', name: 'Göğüs Ortası', icon: '▣' },
-                { id: 'left-chest', name: 'Sol Göğüs Üstü', icon: '◤' },
-                { id: 'left-arm', name: 'Sol Kol', icon: '◀' },
-                { id: 'right-arm', name: 'Sağ Kol', icon: '▶' }
+                { id: 'center-chest', name: 'Orta Göğüs', icon: '▣' },
+                { id: 'left-chest', name: 'Sol Göğüs', icon: '◤' },
+                { id: 'right-bicep', name: 'Sağ Pazu', icon: '▶' },
+                { id: 'left-bicep', name: 'Sol Pazu', icon: '◀' }
             ],
             sweatshirt: [
-                { id: 'center-chest', name: 'Göğüs Ortası', icon: '▣' },
-                { id: 'left-chest', name: 'Sol Göğüs Üstü', icon: '◤' },
-                { id: 'left-arm', name: 'Sol Kol', icon: '◀' },
-                { id: 'right-arm', name: 'Sağ Kol', icon: '▶' }
+                { id: 'center-chest', name: 'Orta Göğüs', icon: '▣' },
+                { id: 'left-chest', name: 'Sol Göğüs', icon: '◤' },
+                { id: 'right-bicep', name: 'Sağ Pazu', icon: '▶' },
+                { id: 'left-bicep', name: 'Sol Pazu', icon: '◀' }
             ],
             hat: [
                 { id: 'front', name: 'Ön', icon: '◉' },
@@ -1787,9 +1885,9 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     }
     
     getViewForPosition(position) {
-        // Kol pozisyonları için yan görünüm
-        if (position === 'left-arm' || position === 'right-arm') {
-            return position === 'left-arm' ? 'side-left' : 'side-right';
+        // Pazu pozisyonları için yan görünüm
+        if (position === 'left-bicep' || position === 'right-bicep') {
+            return position === 'left-bicep' ? 'side-left' : 'side-right';
         }
         // Göğüs pozisyonları için ön görünüm
         return 'front';
