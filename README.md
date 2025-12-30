@@ -78,6 +78,15 @@ nano config.js
 nano shopify-config.js
 ```
 
+### Add Mockup Images
+Place t-shirt mockup photos in `mockups/` directory:
+- `center-chest.jpg` - Full front view (for center chest position)
+- `left-chest.jpg` - Upper close-up view (for left chest position)
+- `left-bicep.jpg` - Right side view showing right sleeve (for left bicep position)
+- `right-bicep.jpg` - Left side view showing left sleeve (for right bicep position)
+
+**Note:** Real photo mockups are used for **white t-shirts only**. Other colors use generated SVG mockups.
+
 ### Run Locally
 ```bash
 # Terminal 1: Python Backend
