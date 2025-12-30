@@ -2322,7 +2322,9 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
             this.updateLoadingText('🎨 Pixel art oluşturuluyor... (OpenAI gpt-image-1)');
             
             // Convert base64 string to blob
-            const byteCharacters = atob(this.uploadedImageBase64);
+            // Remove data URL prefix if present
+            const base64Data = this.uploadedImageBase64.replace(/^data:image\/\w+;base64,/, '');
+            const byteCharacters = atob(base64Data);
             const byteNumbers = new Array(byteCharacters.length);
             for (let i = 0; i < byteCharacters.length; i++) {
                 byteNumbers[i] = byteCharacters.charCodeAt(i);
