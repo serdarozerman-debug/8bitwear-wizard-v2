@@ -1796,7 +1796,15 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         btn.classList.add('active');
         
         this.selectedPosition = btn.dataset.position;
+        
+        // Update mockup view (front/side) based on position
+        this.updateMockup();
+        
+        // Update pixel art overlay position
         this.updateMockupPosition();
+        
+        // Update summary
+        this.updateSummary();
     }
     
     updateMockupPosition() {
