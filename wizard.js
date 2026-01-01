@@ -69,44 +69,44 @@ const CONFIG = window.WIZARD_CONFIG || {
 };
 
 // ==========================================
-// MOCKUP CONFIGURATION - ADJUSTED TO MATCH REFERENCE IMAGES
+// MOCKUP CONFIGURATION - USER ADJUSTED POSITIONS
 // ==========================================
 window.MOCKUP_CONFIG = {
     tshirt: {
         printAreas: {
-            // CENTER CHEST - Ön görünüm, göğsün tam ortasında
+            // CENTER CHEST - 1 boy yukarı
             'center-chest': {
-                top: 42,        // Biraz daha aşağı (göğüs seviyesi)
+                top: 28,        // 1 boy yukarı (42 - 14 = 28)
                 left: 50,       // Tam ortada
-                width: 14,      // Daha küçük
+                width: 14,      // Sabit
                 maxWidth: 110,
                 transform: 'translate(-50%, 0)',
                 view: 'front'
             },
-            // LEFT CHEST - Sol omuz/göğüs logosu (ÇOK KÜÇÜK)
+            // LEFT CHEST - 3 boy aşağı, 4 boy sağa
             'left-chest': {
-                top: 30,        // Üst kısımda
-                left: 26,       // Daha solda
-                width: 7,       // ÇOK küçük logo
+                top: 51,        // 3 boy aşağı (30 + 21 = 51)
+                left: 54,       // 4 boy sağa (26 + 28 = 54)
+                width: 7,       // Sabit
                 maxWidth: 55,
                 transform: 'translate(-50%, 0)',
                 view: 'front'
             },
-            // RIGHT BICEP (Sol yan görünüm = sağ kol)
+            // RIGHT BICEP - 2.5 boy sağa
             'right-bicep': {
-                top: 36,        // Kol üst-orta kısmı
-                left: 28,       // Sol tarafta kol üzerinde
-                width: 9,       // Küçük
+                top: 36,        // Sabit
+                left: 50.5,     // 2.5 boy sağa (28 + 22.5 = 50.5)
+                width: 9,       // Sabit
                 maxWidth: 70,
                 transform: 'translate(-50%, 0) rotate(-3deg)',
                 view: 'side-left'
             },
-            // LEFT BICEP (Sağ yan görünüm = sol kol)
+            // LEFT BICEP - Logo boyutunda, 2 boy sola, yarım boy yukarı
             'left-bicep': {
-                top: 36,        // Kol üst-orta kısmı
-                left: 72,       // Sağ tarafta kol üzerinde (içerde)
-                width: 9,       // Küçük
-                maxWidth: 70,
+                top: 32.5,      // Yarım boy yukarı (36 - 3.5 = 32.5)
+                left: 58,       // 2 boy sola (72 - 14 = 58)
+                width: 7,       // Logo boyutunda (left-chest ile aynı)
+                maxWidth: 55,
                 transform: 'translate(-50%, 0) rotate(3deg)',
                 view: 'side-right'
             }
