@@ -75,35 +75,35 @@ window.MOCKUP_CONFIG = {
     tshirt: {
         printAreas: {
             'center-chest': {
-                top: 35,        // Biraz yukarıda
+                top: 40,        // Biraz daha aşağı
                 left: 50,       // Ortada
-                width: 18,      // Orta boy
-                maxWidth: 140,
+                width: 15,      // Biraz daha küçük
+                maxWidth: 120,
                 transform: 'translate(-50%, 0)',
                 view: 'front'
             },
             'left-chest': {
-                top: 28,        // Üst kısımda (sol göğüs logo)
-                left: 30,       // Solda
-                width: 10,      // Küçük logo boyutu
-                maxWidth: 70,
+                top: 32,        // Biraz daha aşağı
+                left: 28,       // Biraz daha solda
+                width: 8,       // Daha küçük logo
+                maxWidth: 60,
                 transform: 'translate(-50%, 0)',
                 view: 'front'
             },
             'right-bicep': {
-                top: 32,        // Kol üst kısmı
-                left: 28,       // Sol tarafta (side view'da sol kol = sağ bicep)
-                width: 12,      // Kol üzerinde orta boy
-                maxWidth: 85,
-                transform: 'translate(-50%, 0) rotate(-8deg)',
+                top: 38,        // Kol ortası (daha aşağı)
+                left: 30,       // Daha içerde (sol tarafta)
+                width: 10,      // Daha küçük
+                maxWidth: 75,
+                transform: 'translate(-50%, 0) rotate(-5deg)',
                 view: 'side-left'  // Sol yan görünüm (sağ kol için)
             },
             'left-bicep': {
-                top: 32,        // Kol üst kısmı
-                left: 72,       // Sağ tarafta (side view'da sağ kol = sol bicep)
-                width: 12,      // Kol üzerinde orta boy
-                maxWidth: 85,
-                transform: 'translate(-50%, 0) rotate(8deg)',
+                top: 38,        // Kol ortası
+                left: 70,       // Daha içerde (sağ tarafta) - TİŞÖRTÜN İÇİNDE
+                width: 10,      // Daha küçük
+                maxWidth: 75,
+                transform: 'translate(-50%, 0) rotate(5deg)',
                 view: 'side-right'  // Sağ yan görünüm (sol kol için)
             }
         }
