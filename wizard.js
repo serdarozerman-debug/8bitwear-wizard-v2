@@ -75,36 +75,36 @@ window.MOCKUP_CONFIG = {
     tshirt: {
         printAreas: {
             'center-chest': {
-                top: 42,
-                left: 50,
-                width: 20,
-                maxWidth: 180,
+                top: 35,        // Biraz yukarıda
+                left: 50,       // Ortada
+                width: 18,      // Orta boy
+                maxWidth: 140,
                 transform: 'translate(-50%, 0)',
                 view: 'front'
             },
             'left-chest': {
-                top: 35,
-                left: 30,
-                width: 12,
-                maxWidth: 100,
+                top: 28,        // Üst kısımda (sol göğüs logo)
+                left: 30,       // Solda
+                width: 10,      // Küçük logo boyutu
+                maxWidth: 70,
                 transform: 'translate(-50%, 0)',
                 view: 'front'
             },
             'right-bicep': {
-                top: 35,
-                left: 65,
-                width: 15,
-                maxWidth: 120,
-                transform: 'translate(-50%, 0) rotate(-5deg)',
-                view: 'side-right'
+                top: 32,        // Kol üst kısmı
+                left: 28,       // Sol tarafta (side view'da sol kol = sağ bicep)
+                width: 12,      // Kol üzerinde orta boy
+                maxWidth: 85,
+                transform: 'translate(-50%, 0) rotate(-8deg)',
+                view: 'side-left'  // Sol yan görünüm (sağ kol için)
             },
             'left-bicep': {
-                top: 35,
-                left: 35,
-                width: 15,
-                maxWidth: 120,
-                transform: 'translate(-50%, 0) rotate(5deg)',
-                view: 'side-left'
+                top: 32,        // Kol üst kısmı
+                left: 72,       // Sağ tarafta (side view'da sağ kol = sol bicep)
+                width: 12,      // Kol üzerinde orta boy
+                maxWidth: 85,
+                transform: 'translate(-50%, 0) rotate(8deg)',
+                view: 'side-right'  // Sağ yan görünüm (sol kol için)
             }
         }
     },
