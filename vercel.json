@@ -13,12 +13,20 @@
     {
       "src": "*.css",
       "use": "@vercel/static"
+    },
+    {
+      "src": "mockups/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/(.*\\.(js|css|html))",
+      "src": "/(.*\\.(js|css|html|jpg|jpeg|png))",
       "dest": "/$1"
+    },
+    {
+      "src": "/mockups/(.*)",
+      "dest": "/mockups/$1"
     },
     {
       "src": "/(.*)",
