@@ -92,20 +92,20 @@ window.MOCKUP_CONFIG = {
                 transform: 'translate(-50%, 0)',
                 view: 'front'
             },
-            // RIGHT BICEP - 2.5 boy sağa
+            // RIGHT BICEP - 0.1 boy sola kaydırıldı
             'right-bicep': {
                 top: 36,        // Sabit
-                left: 50.5,     // 2.5 boy sağa (28 + 22.5 = 50.5)
+                left: 49.6,     // 0.1 boy sola (50.5 - 0.9 = 49.6)
                 width: 9,       // Sabit
                 maxWidth: 70,
                 transform: 'translate(-50%, 0) rotate(-3deg)',
                 view: 'side-left'
             },
-            // LEFT BICEP - Logo boyutunda, 2 boy sola, yarım boy yukarı
+            // LEFT BICEP - 0.7 boy sola kaydırıldı
             'left-bicep': {
-                top: 32.5,      // Yarım boy yukarı (36 - 3.5 = 32.5)
-                left: 58,       // 2 boy sola (72 - 14 = 58)
-                width: 7,       // Logo boyutunda (left-chest ile aynı)
+                top: 32.5,      // Yarım boy yukarı (sabit)
+                left: 53.1,     // 0.7 boy sola (58 - 4.9 = 53.1)
+                width: 7,       // Logo boyutunda
                 maxWidth: 55,
                 transform: 'translate(-50%, 0) rotate(3deg)',
                 view: 'side-right'
