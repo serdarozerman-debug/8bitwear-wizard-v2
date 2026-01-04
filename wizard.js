@@ -352,6 +352,7 @@ class PixelWizard {
     
     handleFileSelect(e) {
         const files = e.target.files;
+        console.log('📁 File selected:', files.length > 0 ? files[0].name : 'none');
         if (files.length > 0) {
             this.processFile(files[0]);
         }
@@ -360,8 +361,10 @@ class PixelWizard {
     }
     
     processFile(file) {
+        console.log('🔄 Processing file:', file.name, file.type, file.size);
+        
         // Validate file type
-        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
         if (!validTypes.includes(file.type)) {
             this.showError('Lütfen JPG, PNG veya WEBP formatında bir görsel yükleyin.');
             return;
@@ -373,12 +376,18 @@ class PixelWizard {
             return;
         }
         
+        console.log('✅ File validation passed');
+        
         // Read, resize if needed, and display
         const reader = new FileReader();
         reader.onload = (e) => {
+            console.log('📖 File read complete, creating image...');
+            
             // Create image to resize if needed
             const img = new Image();
             img.onload = () => {
+                console.log(`📸 Image loaded: ${img.width}x${img.height}`);
+                
                 const maxSize = 1024;
                 let width = img.width;
                 let height = img.height;
@@ -405,17 +414,40 @@ class PixelWizard {
                     console.log(`📐 Image resized to ${width}x${height}`);
                 } else {
                     // Use original
-            this.uploadedImage = e.target.result;
+                    this.uploadedImage = e.target.result;
+                    console.log('📐 Using original image (no resize needed)');
                 }
                 
-            // Extract base64 without data URL prefix
+                // Extract base64 without data URL prefix
                 this.uploadedImageBase64 = (this.uploadedImage.split(',')[1] || '').trim();
                 this.uploadedImageMimeType = file.type;
-            this.previewImage.src = this.uploadedImage;
-            this.uploadZone.classList.add('has-image');
-            this.btnToStep2.disabled = false;
+                
+                console.log('🎯 Setting preview image...');
+                console.log('  - previewImage element:', this.previewImage ? 'found' : 'NULL');
+                console.log('  - uploadZone element:', this.uploadZone ? 'found' : 'NULL');
+                console.log('  - btnToStep2 element:', this.btnToStep2 ? 'found' : 'NULL');
+                
+                if (this.previewImage) {
+                    this.previewImage.src = this.uploadedImage;
+                }
+                if (this.uploadZone) {
+                    this.uploadZone.classList.add('has-image');
+                }
+                if (this.btnToStep2) {
+                    this.btnToStep2.disabled = false;
+                }
+                
+                console.log('✅ Image upload complete!');
+            };
+            img.onerror = () => {
+                console.error('❌ Failed to load image');
+                this.showError('Görsel yüklenemedi. Lütfen başka bir dosya deneyin.');
             };
             img.src = e.target.result;
+        };
+        reader.onerror = () => {
+            console.error('❌ Failed to read file');
+            this.showError('Dosya okunamadı. Lütfen tekrar deneyin.');
         };
         reader.readAsDataURL(file);
     }
