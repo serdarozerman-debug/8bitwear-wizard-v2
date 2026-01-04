@@ -308,56 +308,56 @@ class PixelWizard {
     
     bindEvents() {
         // Step 1: Upload
-        this.uploadZone.addEventListener('click', (e) => {
+        this.uploadZone?.addEventListener('click', (e) => {
             if (!e.target.closest('.remove-image')) {
-                this.fileInput.click();
+                this.fileInput?.click();
             }
         });
         
-        this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+        this.fileInput?.addEventListener('change', (e) => this.handleFileSelect(e));
         
         // Drag and drop
-        this.uploadZone.addEventListener('dragover', (e) => this.handleDragOver(e));
-        this.uploadZone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
-        this.uploadZone.addEventListener('drop', (e) => this.handleDrop(e));
+        this.uploadZone?.addEventListener('dragover', (e) => this.handleDragOver(e));
+        this.uploadZone?.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+        this.uploadZone?.addEventListener('drop', (e) => this.handleDrop(e));
         
-        this.removeImageBtn.addEventListener('click', (e) => {
+        this.removeImageBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
             this.removeImage();
         });
         
-        this.btnToStep2.addEventListener('click', () => this.goToStep(2));
+        this.btnToStep2?.addEventListener('click', () => this.goToStep(2));
         
         // Step 2: Convert
-        this.btnRetry.addEventListener('click', () => this.retryConversion());
-        this.btnToStep3.addEventListener('click', () => this.goToStep(3));
-        this.btnUploadOwn.addEventListener('click', () => this.handleUploadOwn());
-        this.btnCancel.addEventListener('click', () => this.goToStep(1));
+        this.btnRetry?.addEventListener('click', () => this.retryConversion());
+        this.btnToStep3?.addEventListener('click', () => this.goToStep(3));
+        this.btnUploadOwn?.addEventListener('click', () => this.handleUploadOwn());
+        this.btnCancel?.addEventListener('click', () => this.goToStep(1));
         
         // Step 3: Preview
-        this.viewBtns.forEach(btn => {
+        this.viewBtns?.forEach(btn => {
             btn.addEventListener('click', () => this.handleViewChange(btn));
         });
         
-        this.typeBtns.forEach(btn => {
+        this.typeBtns?.forEach(btn => {
             btn.addEventListener('click', () => this.handleProductTypeChange(btn));
         });
         
-        this.colorBtns.forEach(btn => {
+        this.colorBtns?.forEach(btn => {
             btn.addEventListener('click', () => this.handleColorChange(btn));
         });
         
-        this.sizeBtns.forEach(btn => {
+        this.sizeBtns?.forEach(btn => {
             btn.addEventListener('click', () => this.handleSizeChange(btn));
         });
         
-        this.btnBackToStep2.addEventListener('click', () => this.goToStep(2));
-        this.btnToStep4.addEventListener('click', () => this.goToStep(4));
+        this.btnBackToStep2?.addEventListener('click', () => this.goToStep(2));
+        this.btnToStep4?.addEventListener('click', () => this.goToStep(4));
         
         // Step 4: Checkout
-        this.consentCheckbox.addEventListener('change', () => this.updateCheckoutButton());
-        this.btnBackToStep3.addEventListener('click', () => this.goToStep(3));
-        this.btnCompleteOrder.addEventListener('click', () => this.handleCompleteOrder());
+        this.consentCheckbox?.addEventListener('change', () => this.updateCheckoutButton());
+        this.btnBackToStep3?.addEventListener('click', () => this.goToStep(3));
+        this.btnCompleteOrder?.addEventListener('click', () => this.handleCompleteOrder());
     }
     
     // ==========================================
