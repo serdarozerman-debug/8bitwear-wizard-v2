@@ -13,7 +13,6 @@ env/
 
 # API Keys & Secrets
 config.js
-shopify-config.js
 credentials.json
 token.json
 
@@ -39,4 +38,6 @@ test-*.png
 test-*.jpg
 test-*.stl
 uploads/
+
+.vercel
 
