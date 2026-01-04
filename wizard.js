@@ -2083,31 +2083,6 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         // User can see different positions but we show them all centered for preview
         console.log('✅ Mockup position updated (centered for preview)');
     }
-        
-        const printArea = productConfig.printAreas[this.selectedPosition];
-        if (!printArea) {
-            console.error('❌ No print area config found for position:', this.selectedPosition);
-            return;
-        }
-        
-        // Apply dynamic positioning from config
-        overlay.style.top = `${printArea.top}%`;
-        overlay.style.left = `${printArea.left}%`;
-        overlay.style.width = `${printArea.width}%`;
-        overlay.style.maxWidth = `${printArea.maxWidth}px`;
-        overlay.style.transform = printArea.transform;
-        
-        // Ensure pixel art is visible if we have a result
-        if (this.pixelArtResult) {
-            overlayImg.src = this.pixelArtResult;
-            overlay.style.display = 'block';
-            console.log(`✅ Position updated: ${this.selectedPosition} (${printArea.view} view)`);
-            console.log(`   Config: top=${printArea.top}%, left=${printArea.left}%, width=${printArea.width}%`);
-        } else {
-            overlay.style.display = 'none';
-            console.log(`📍 Position set: ${this.selectedPosition} (no pixel art yet)`);
-        }
-    }
     
     handleViewChange(btn) {
         this.viewBtns.forEach(b => b.classList.remove('active'));
