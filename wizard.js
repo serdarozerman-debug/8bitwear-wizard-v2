@@ -251,12 +251,12 @@ class PixelWizard {
         this.progressFill = document.getElementById('progressFill');
         this.progressSteps = document.querySelectorAll('.progress-step');
         
-        // Steps
+        // Steps - using data-step attribute selector
         this.steps = {
-            1: document.getElementById('step1'),
-            2: document.getElementById('step2'),
-            3: document.getElementById('step3'),
-            4: document.getElementById('step4')
+            1: document.querySelector('[data-step="1"].step'),
+            2: document.querySelector('[data-step="2"].step'),
+            3: document.querySelector('[data-step="3"].step'),
+            4: document.querySelector('[data-step="4"].step')
         };
         
         // Step 1 elements
