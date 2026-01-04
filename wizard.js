@@ -68,6 +68,108 @@ const CONFIG = window.WIZARD_CONFIG || {
     }
 };
 
+// ==========================================
+// MOCKUP CONFIGURATION - USER ADJUSTED POSITIONS
+// ==========================================
+window.MOCKUP_CONFIG = {
+    tshirt: {
+        printAreas: {
+            // CENTER CHEST - 1 boy yukarı
+            'center-chest': {
+                top: 28,        // 1 boy yukarı (42 - 14 = 28)
+                left: 50,       // Tam ortada
+                width: 14,      // Sabit
+                maxWidth: 110,
+                transform: 'translate(-50%, 0)',
+                view: 'front'
+            },
+            // LEFT CHEST - 3 boy aşağı, 4 boy sağa
+            'left-chest': {
+                top: 51,        // 3 boy aşağı (30 + 21 = 51)
+                left: 54,       // 4 boy sağa (26 + 28 = 54)
+                width: 7,       // Sabit
+                maxWidth: 55,
+                transform: 'translate(-50%, 0)',
+                view: 'front'
+            },
+            // RIGHT BICEP - 0.1 boy sola kaydırıldı
+            'right-bicep': {
+                top: 36,        // Sabit
+                left: 49.6,     // 0.1 boy sola (50.5 - 0.9 = 49.6)
+                width: 9,       // Sabit
+                maxWidth: 70,
+                transform: 'translate(-50%, 0) rotate(-3deg)',
+                view: 'side-left'
+            },
+            // LEFT BICEP - 0.7 boy sola kaydırıldı
+            'left-bicep': {
+                top: 32.5,      // Yarım boy yukarı (sabit)
+                left: 53.1,     // 0.7 boy sola (58 - 4.9 = 53.1)
+                width: 7,       // Logo boyutunda
+                maxWidth: 55,
+                transform: 'translate(-50%, 0) rotate(3deg)',
+                view: 'side-right'
+            }
+        }
+    },
+    sweatshirt: {
+        printAreas: {
+            'center-chest': {
+                top: 42,
+                left: 50,
+                width: 22,
+                maxWidth: 200,
+                transform: 'translate(-50%, 0)',
+                view: 'front'
+            },
+            'left-chest': {
+                top: 35,
+                left: 28,
+                width: 14,
+                maxWidth: 110,
+                transform: 'translate(-50%, 0)',
+                view: 'front'
+            },
+            'right-bicep': {
+                top: 35,
+                left: 65,
+                width: 16,
+                maxWidth: 130,
+                transform: 'translate(-50%, 0) rotate(-5deg)',
+                view: 'side-right'
+            },
+            'left-bicep': {
+                top: 35,
+                left: 35,
+                width: 16,
+                maxWidth: 130,
+                transform: 'translate(-50%, 0) rotate(5deg)',
+                view: 'side-left'
+            }
+        }
+    },
+    hat: {
+        printAreas: {
+            'front': {
+                top: 45,
+                left: 50,
+                width: 35,
+                maxWidth: 150,
+                transform: 'translate(-50%, 0)',
+                view: 'front'
+            },
+            'side': {
+                top: 45,
+                left: 50,
+                width: 30,
+                maxWidth: 130,
+                transform: 'translate(-50%, 0)',
+                view: 'side'
+            }
+        }
+    }
+};
+
 class PixelWizard {
     constructor() {
         // State
@@ -102,19 +204,19 @@ class PixelWizard {
             red: 'Kırmızı'
         };
         
-        // Product positions
+        // Product positions (4 pozisyon: sol göğüs, orta göğüs, sağ pazu, sol pazu)
         this.productPositions = {
             tshirt: [
-                { id: 'center-chest', name: 'Göğüs Ortası', icon: '▣' },
-                { id: 'left-chest', name: 'Sol Göğüs Üstü', icon: '◤' },
-                { id: 'left-arm', name: 'Sol Kol', icon: '◀' },
-                { id: 'right-arm', name: 'Sağ Kol', icon: '▶' }
+                { id: 'center-chest', name: 'Orta Göğüs', icon: '▣' },
+                { id: 'left-chest', name: 'Sol Göğüs', icon: '◤' },
+                { id: 'right-bicep', name: 'Sağ Pazu', icon: '▶' },
+                { id: 'left-bicep', name: 'Sol Pazu', icon: '◀' }
             ],
             sweatshirt: [
-                { id: 'center-chest', name: 'Göğüs Ortası', icon: '▣' },
-                { id: 'left-chest', name: 'Sol Göğüs Üstü', icon: '◤' },
-                { id: 'left-arm', name: 'Sol Kol', icon: '◀' },
-                { id: 'right-arm', name: 'Sağ Kol', icon: '▶' }
+                { id: 'center-chest', name: 'Orta Göğüs', icon: '▣' },
+                { id: 'left-chest', name: 'Sol Göğüs', icon: '◤' },
+                { id: 'right-bicep', name: 'Sağ Pazu', icon: '▶' },
+                { id: 'left-bicep', name: 'Sol Pazu', icon: '◀' }
             ],
             hat: [
                 { id: 'front', name: 'Ön', icon: '◉' },
@@ -130,6 +232,9 @@ class PixelWizard {
         this.bindElements();
         this.bindEvents();
         this.updateProgress();
+        
+        // Populate position selector for initial product
+        this.populatePositionSelector();
         
         // Load initial mockup
         this.updateMockup();
@@ -156,10 +261,10 @@ class PixelWizard {
         // Step 1 elements
         this.uploadZone = document.getElementById('uploadZone');
         this.fileInput = document.getElementById('fileInput');
-        this.previewContainer = document.getElementById('previewContainer');
-        this.previewImage = document.getElementById('imagePreview'); // HTML'de imagePreview
-        this.changeImageBtn = document.getElementById('changeImageBtn');
-        this.btnToStep2 = document.getElementById('nextStep1'); // HTML'de nextStep1
+        this.uploadPreview = document.getElementById('uploadPreview');
+        this.previewImage = document.getElementById('previewImage');
+        this.removeImageBtn = document.getElementById('removeImage');
+        this.btnToStep2 = document.getElementById('btnToStep2');
         
         // Step 2 elements
         this.originalImage = document.getElementById('originalImage');
@@ -178,7 +283,7 @@ class PixelWizard {
         this.btnCancel = document.getElementById('btnCancel');
         
         // Step 3 elements
-        this.mockupImage = document.getElementById('mockupImage');
+        this.mockupImage = document.getElementById('liveMockup'); // Changed from mockupImage to liveMockup
         this.mockupPixelArt = document.getElementById('mockupPixelArt');
         this.viewBtns = document.querySelectorAll('.view-btn');
         this.typeBtns = document.querySelectorAll('.type-btn');
@@ -199,67 +304,60 @@ class PixelWizard {
         this.consentCheckbox = document.getElementById('consentCheckbox');
         this.btnCompleteOrder = document.getElementById('btnCompleteOrder');
         this.btnBackToStep3 = document.getElementById('btnBackToStep3');
-        
-        // Debug: Check if critical elements are found
-        if (!this.uploadZone) {
-            console.error('❌ uploadZone element not found!');
-            console.log('DOM state:', document.readyState);
-            console.log('Body children:', document.body ? document.body.children.length : 'no body');
-        }
     }
     
     bindEvents() {
         // Step 1: Upload
-        this.uploadZone?.addEventListener('click', (e) => {
+        this.uploadZone.addEventListener('click', (e) => {
             if (!e.target.closest('.remove-image')) {
-                this.fileInput?.click();
+                this.fileInput.click();
             }
         });
         
-        this.fileInput?.addEventListener('change', (e) => this.handleFileSelect(e));
+        this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
         
         // Drag and drop
-        this.uploadZone?.addEventListener('dragover', (e) => this.handleDragOver(e));
-        this.uploadZone?.addEventListener('dragleave', (e) => this.handleDragLeave(e));
-        this.uploadZone?.addEventListener('drop', (e) => this.handleDrop(e));
+        this.uploadZone.addEventListener('dragover', (e) => this.handleDragOver(e));
+        this.uploadZone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+        this.uploadZone.addEventListener('drop', (e) => this.handleDrop(e));
         
-        this.changeImageBtn?.addEventListener('click', (e) => {
+        this.removeImageBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             this.removeImage();
         });
         
-        this.btnToStep2?.addEventListener('click', () => this.goToStep(2));
+        this.btnToStep2.addEventListener('click', () => this.goToStep(2));
         
         // Step 2: Convert
-        this.btnRetry?.addEventListener('click', () => this.retryConversion());
-        this.btnToStep3?.addEventListener('click', () => this.goToStep(3));
-        this.btnUploadOwn?.addEventListener('click', () => this.handleUploadOwn());
-        this.btnCancel?.addEventListener('click', () => this.goToStep(1));
+        this.btnRetry.addEventListener('click', () => this.retryConversion());
+        this.btnToStep3.addEventListener('click', () => this.goToStep(3));
+        this.btnUploadOwn.addEventListener('click', () => this.handleUploadOwn());
+        this.btnCancel.addEventListener('click', () => this.goToStep(1));
         
         // Step 3: Preview
-        this.viewBtns?.forEach(btn => {
+        this.viewBtns.forEach(btn => {
             btn.addEventListener('click', () => this.handleViewChange(btn));
         });
         
-        this.typeBtns?.forEach(btn => {
+        this.typeBtns.forEach(btn => {
             btn.addEventListener('click', () => this.handleProductTypeChange(btn));
         });
         
-        this.colorBtns?.forEach(btn => {
+        this.colorBtns.forEach(btn => {
             btn.addEventListener('click', () => this.handleColorChange(btn));
         });
         
-        this.sizeBtns?.forEach(btn => {
+        this.sizeBtns.forEach(btn => {
             btn.addEventListener('click', () => this.handleSizeChange(btn));
         });
         
-        this.btnBackToStep2?.addEventListener('click', () => this.goToStep(2));
-        this.btnToStep4?.addEventListener('click', () => this.goToStep(4));
+        this.btnBackToStep2.addEventListener('click', () => this.goToStep(2));
+        this.btnToStep4.addEventListener('click', () => this.goToStep(4));
         
         // Step 4: Checkout
-        this.consentCheckbox?.addEventListener('change', () => this.updateCheckoutButton());
-        this.btnBackToStep3?.addEventListener('click', () => this.goToStep(3));
-        this.btnCompleteOrder?.addEventListener('click', () => this.handleCompleteOrder());
+        this.consentCheckbox.addEventListener('change', () => this.updateCheckoutButton());
+        this.btnBackToStep3.addEventListener('click', () => this.goToStep(3));
+        this.btnCompleteOrder.addEventListener('click', () => this.handleCompleteOrder());
     }
     
     // ==========================================
@@ -352,7 +450,6 @@ class PixelWizard {
     
     handleFileSelect(e) {
         const files = e.target.files;
-        console.log('📁 File selected:', files.length > 0 ? files[0].name : 'none');
         if (files.length > 0) {
             this.processFile(files[0]);
         }
@@ -361,10 +458,8 @@ class PixelWizard {
     }
     
     processFile(file) {
-        console.log('🔄 Processing file:', file.name, file.type, file.size);
-        
         // Validate file type
-        const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
         if (!validTypes.includes(file.type)) {
             this.showError('Lütfen JPG, PNG veya WEBP formatında bir görsel yükleyin.');
             return;
@@ -376,18 +471,12 @@ class PixelWizard {
             return;
         }
         
-        console.log('✅ File validation passed');
-        
         // Read, resize if needed, and display
         const reader = new FileReader();
         reader.onload = (e) => {
-            console.log('📖 File read complete, creating image...');
-            
             // Create image to resize if needed
             const img = new Image();
             img.onload = () => {
-                console.log(`📸 Image loaded: ${img.width}x${img.height}`);
-                
                 const maxSize = 1024;
                 let width = img.width;
                 let height = img.height;
@@ -414,44 +503,17 @@ class PixelWizard {
                     console.log(`📐 Image resized to ${width}x${height}`);
                 } else {
                     // Use original
-                    this.uploadedImage = e.target.result;
-                    console.log('📐 Using original image (no resize needed)');
+            this.uploadedImage = e.target.result;
                 }
                 
-                // Extract base64 without data URL prefix
+            // Extract base64 without data URL prefix
                 this.uploadedImageBase64 = (this.uploadedImage.split(',')[1] || '').trim();
                 this.uploadedImageMimeType = file.type;
-                
-                console.log('🎯 Setting preview image...');
-                console.log('  - previewImage element:', this.previewImage ? 'found' : 'NULL');
-                console.log('  - uploadZone element:', this.uploadZone ? 'found' : 'NULL');
-                console.log('  - btnToStep2 element:', this.btnToStep2 ? 'found' : 'NULL');
-                console.log('  - previewContainer element:', this.previewContainer ? 'found' : 'NULL');
-                
-                if (this.previewImage) {
-                    this.previewImage.src = this.uploadedImage;
-                }
-                if (this.previewContainer) {
-                    this.previewContainer.style.display = 'block';
-                }
-                if (this.uploadZone) {
-                    this.uploadZone.style.display = 'none';
-                }
-                if (this.btnToStep2) {
-                    this.btnToStep2.disabled = false;
-                }
-                
-                console.log('✅ Image upload complete!');
-            };
-            img.onerror = () => {
-                console.error('❌ Failed to load image');
-                this.showError('Görsel yüklenemedi. Lütfen başka bir dosya deneyin.');
+            this.previewImage.src = this.uploadedImage;
+            this.uploadZone.classList.add('has-image');
+            this.btnToStep2.disabled = false;
             };
             img.src = e.target.result;
-        };
-        reader.onerror = () => {
-            console.error('❌ Failed to read file');
-            this.showError('Dosya okunamadı. Lütfen tekrar deneyin.');
         };
         reader.readAsDataURL(file);
     }
@@ -460,21 +522,10 @@ class PixelWizard {
         this.uploadedImage = null;
         this.uploadedImageBase64 = null;
         this.uploadedImageMimeType = null;
-        if (this.previewImage) {
-            this.previewImage.src = '';
-        }
-        if (this.previewContainer) {
-            this.previewContainer.style.display = 'none';
-        }
-        if (this.uploadZone) {
-            this.uploadZone.style.display = 'block';
-        }
-        if (this.btnToStep2) {
-            this.btnToStep2.disabled = true;
-        }
-        if (this.fileInput) {
-            this.fileInput.value = '';
-        }
+        this.previewImage.src = '';
+        this.uploadZone.classList.remove('has-image');
+        this.btnToStep2.disabled = true;
+        this.fileInput.value = '';
     }
     
     // ==========================================
@@ -1749,7 +1800,15 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         btn.classList.add('active');
         
         this.selectedPosition = btn.dataset.position;
+        
+        // Update mockup view (front/side) based on position
+        this.updateMockup();
+        
+        // Update pixel art overlay position
         this.updateMockupPosition();
+        
+        // Update summary
+        this.updateSummary();
     }
     
     updateMockupPosition() {
@@ -1841,15 +1900,34 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     }
     
     getViewForPosition(position) {
-        // Kol pozisyonları için yan görünüm
-        if (position === 'left-arm' || position === 'right-arm') {
-            return position === 'left-arm' ? 'side-left' : 'side-right';
+        // Pazu pozisyonları için yan görünüm
+        if (position === 'left-bicep' || position === 'right-bicep') {
+            return position === 'left-bicep' ? 'side-left' : 'side-right';
         }
         // Göğüs pozisyonları için ön görünüm
         return 'front';
     }
     
     getMockupUrl(view = 'front') {
+        // REAL PHOTO MOCKUPS for white t-shirt
+        const position = this.selectedPosition;
+        const product = this.selectedProduct;
+        
+        // Use real photos for white t-shirt
+        if (product === 'tshirt' && this.selectedColor === 'white') {
+            const mockupMap = {
+                'center-chest': 'mockups/center-chest.jpg',      // Resim 3: Full front view
+                'left-chest': 'mockups/left-chest.jpg',          // Resim 2: Upper close-up
+                'right-bicep': 'mockups/right-bicep.jpg',        // Resim 5: Left side (left sleeve visible)
+                'left-bicep': 'mockups/left-bicep.jpg'           // Resim 4: Right side (right sleeve visible)
+            };
+            
+            if (mockupMap[position]) {
+                return mockupMap[position];
+            }
+        }
+        
+        // Fallback to SVG for other colors/products
         // Color hex values
         const colors = {
             black: '#1a1a1a',
@@ -1887,95 +1965,232 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     generateFrontViewSVG(color, label) {
         return `<svg width="800" height="1000" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <!-- Fabric texture pattern -->
-                <pattern id="fabric" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-                    <rect width="4" height="4" fill="${color}"/>
-                    <circle cx="1" cy="1" r="0.3" fill="${this.darkenColor(color, 3)}" opacity="0.3"/>
-                    <circle cx="3" cy="3" r="0.3" fill="${this.darkenColor(color, 3)}" opacity="0.3"/>
+                <!-- Enhanced fabric texture pattern -->
+                <pattern id="fabric" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                    <rect width="8" height="8" fill="${color}"/>
+                    <circle cx="2" cy="2" r="0.4" fill="${this.darkenColor(color, 5)}" opacity="0.2"/>
+                    <circle cx="6" cy="6" r="0.4" fill="${this.lightenColor(color, 3)}" opacity="0.15"/>
+                    <line x1="0" y1="4" x2="8" y2="4" stroke="${this.darkenColor(color, 3)}" stroke-width="0.3" opacity="0.1"/>
+                    <line x1="4" y1="0" x2="4" y2="8" stroke="${this.darkenColor(color, 3)}" stroke-width="0.3" opacity="0.1"/>
                 </pattern>
                 
-                <!-- Realistic gradient for depth -->
-                <linearGradient id="bodyGrad" x1="50%" y1="0%" x2="50%" y2="100%">
-                    <stop offset="0%" style="stop-color:${this.lightenColor(color, 10)};stop-opacity:1" />
-                    <stop offset="40%" style="stop-color:${color};stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:${this.darkenColor(color, 15)};stop-opacity:1" />
+                <!-- Realistic 3D gradient for body depth -->
+                <linearGradient id="bodyGrad" x1="30%" y1="0%" x2="70%" y2="0%">
+                    <stop offset="0%" style="stop-color:${this.darkenColor(color, 18)};stop-opacity:1" />
+                    <stop offset="25%" style="stop-color:${this.darkenColor(color, 8)};stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:${color};stop-opacity:1" />
+                    <stop offset="75%" style="stop-color:${this.lightenColor(color, 8)};stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:${this.darkenColor(color, 12)};stop-opacity:1" />
                 </linearGradient>
                 
-                <!-- Subtle shadow -->
+                <!-- Vertical gradient for natural lighting -->
+                <linearGradient id="verticalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#fff;stop-opacity:0.15" />
+                    <stop offset="30%" style="stop-color:#fff;stop-opacity:0.05" />
+                    <stop offset="70%" style="stop-color:#000;stop-opacity:0.05" />
+                    <stop offset="100%" style="stop-color:#000;stop-opacity:0.2" />
+                </linearGradient>
+                
+                <!-- Enhanced shadow with depth -->
                 <filter id="softShadow">
-                    <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-                    <feOffset dx="0" dy="2" result="offsetblur"/>
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+                    <feOffset dx="0" dy="3" result="offsetblur"/>
                     <feComponentTransfer>
-                        <feFuncA type="linear" slope="0.3"/>
+                        <feFuncA type="linear" slope="0.4"/>
                     </feComponentTransfer>
                     <feMerge>
                         <feMergeNode/>
                         <feMergeNode in="SourceGraphic"/>
                     </feMerge>
                 </filter>
+                
+                <!-- Fabric fold effect -->
+                <filter id="fabricFold">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" result="noise"/>
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+                </filter>
             </defs>
             
-            <!-- Clean background -->
+            <!-- Clean background with subtle gradient -->
             <rect width="800" height="1000" fill="#f5f5f7"/>
+            <rect width="800" height="1000" fill="url(#verticalGrad)" opacity="0.3"/>
             
-            <!-- T-Shirt body (realistic proportions) -->
+            <!-- Shadow on ground -->
+            <ellipse cx="400" cy="920" rx="180" ry="30" fill="#000" opacity="0.08"/>
+            
+            <!-- T-Shirt body (improved realistic proportions) -->
             <path d="M 250 200 
-                     L 200 250 
-                     L 200 700 
-                     Q 200 720 220 720
+                     Q 240 210 200 250 
+                     L 200 680 
+                     Q 200 710 220 720
+                     L 380 720
+                     Q 380 730 400 730
+                     Q 420 730 420 720
                      L 580 720
-                     Q 600 720 600 700
+                     Q 600 710 600 680
                      L 600 250
-                     L 550 200
-                     L 520 240
-                     Q 400 260 280 240
+                     Q 560 210 550 200
+                     L 530 230
+                     Q 520 250 500 260
+                     Q 450 270 400 270
+                     Q 350 270 300 260
+                     Q 280 250 270 230
                      Z" 
                   fill="url(#bodyGrad)" 
-                  stroke="#ddd" 
-                  stroke-width="2"
+                  stroke="${this.darkenColor(color, 25)}" 
+                  stroke-width="1.5"
                   filter="url(#softShadow)"/>
             
-            <!-- Sleeves (short sleeves) -->
-            <path d="M 200 250 L 150 320 L 180 380 L 200 350 Z" 
-                  fill="${this.darkenColor(color, 10)}" 
-                  stroke="#ddd" 
-                  stroke-width="1"/>
-            <path d="M 600 250 L 650 320 L 620 380 L 600 350 Z" 
-                  fill="${this.darkenColor(color, 10)}" 
-                  stroke="#ddd" 
-                  stroke-width="1"/>
+            <!-- Fabric texture overlay -->
+            <path d="M 250 200 
+                     Q 240 210 200 250 
+                     L 200 680 
+                     Q 200 710 220 720
+                     L 380 720
+                     Q 380 730 400 730
+                     Q 420 730 420 720
+                     L 580 720
+                     Q 600 710 600 680
+                     L 600 250
+                     Q 560 210 550 200
+                     L 530 230
+                     Q 520 250 500 260
+                     Q 450 270 400 270
+                     Q 350 270 300 260
+                     Q 280 250 270 230
+                     Z" 
+                  fill="url(#fabric)" 
+                  opacity="0.6"/>
             
-            <!-- Collar (crew neck) -->
-            <ellipse cx="400" cy="210" rx="45" ry="22" 
+            <!-- Vertical lighting effect -->
+            <path d="M 250 200 
+                     Q 240 210 200 250 
+                     L 200 680 
+                     Q 200 710 220 720
+                     L 380 720
+                     Q 380 730 400 730
+                     Q 420 730 420 720
+                     L 580 720
+                     Q 600 710 600 680
+                     L 600 250
+                     Q 560 210 550 200
+                     L 530 230
+                     Q 520 250 500 260
+                     Q 450 270 400 270
+                     Q 350 270 300 260
+                     Q 280 250 270 230
+                     Z" 
+                  fill="url(#verticalGrad)"/>
+            
+            <!-- Sleeves (short sleeves with fold details) -->
+            <path d="M 200 250 
+                     L 160 300 
+                     Q 150 330 155 350
+                     L 180 380 
+                     L 200 350 Z" 
+                  fill="${this.darkenColor(color, 15)}" 
+                  stroke="${this.darkenColor(color, 25)}" 
+                  stroke-width="1.5"/>
+            <path d="M 200 250 
+                     L 160 300 
+                     Q 150 330 155 350
+                     L 180 380 
+                     L 200 350 Z" 
+                  fill="url(#fabric)" 
+                  opacity="0.4"/>
+            
+            <path d="M 600 250 
+                     L 640 300 
+                     Q 650 330 645 350
+                     L 620 380 
+                     L 600 350 Z" 
+                  fill="${this.darkenColor(color, 15)}" 
+                  stroke="${this.darkenColor(color, 25)}" 
+                  stroke-width="1.5"/>
+            <path d="M 600 250 
+                     L 640 300 
+                     Q 650 330 645 350
+                     L 620 380 
+                     L 600 350 Z" 
+                  fill="url(#fabric)" 
+                  opacity="0.4"/>
+            
+            <!-- Sleeve highlights (3D effect) -->
+            <path d="M 170 305 Q 165 325 168 340" 
+                  stroke="${this.lightenColor(color, 20)}" 
+                  stroke-width="2" 
+                  opacity="0.4" 
+                  fill="none"/>
+            <path d="M 630 305 Q 635 325 632 340" 
+                  stroke="${this.darkenColor(color, 20)}" 
+                  stroke-width="2" 
+                  opacity="0.3" 
+                  fill="none"/>
+            
+            <!-- Collar (crew neck with depth) -->
+            <ellipse cx="400" cy="210" rx="48" ry="24" 
+                     fill="${this.darkenColor(color, 25)}" 
+                     stroke="${this.darkenColor(color, 30)}" 
+                     stroke-width="1.5"/>
+            <ellipse cx="400" cy="208" rx="45" ry="22" 
                      fill="${this.darkenColor(color, 20)}" 
-                     stroke="#ddd" 
+                     stroke="${this.darkenColor(color, 25)}" 
                      stroke-width="1"/>
-            <ellipse cx="400" cy="210" rx="35" ry="16" 
+            <ellipse cx="400" cy="210" rx="38" ry="18" 
                      fill="#f5f5f7"/>
+            <ellipse cx="400" cy="209" rx="35" ry="16" 
+                     fill="#fafafa"/>
             
-            <!-- Subtle seam lines -->
-            <line x1="400" y1="240" x2="400" y2="720" 
-                  stroke="${this.darkenColor(color, 5)}" 
+            <!-- Seam lines (center and sides) -->
+            <line x1="400" y1="270" x2="400" y2="720" 
+                  stroke="${this.darkenColor(color, 8)}" 
+                  stroke-width="1.5" 
+                  opacity="0.4"
+                  stroke-dasharray="5,5"/>
+            
+            <!-- Chest wrinkles/folds for realism -->
+            <path d="M 300 450 Q 350 448 400 450 Q 450 448 500 450" 
+                  stroke="${this.darkenColor(color, 12)}" 
                   stroke-width="1" 
-                  opacity="0.3"/>
+                  opacity="0.2" 
+                  fill="none"/>
+            <path d="M 320 550 Q 360 548 400 550 Q 440 548 480 550" 
+                  stroke="${this.darkenColor(color, 12)}" 
+                  stroke-width="1" 
+                  opacity="0.15" 
+                  fill="none"/>
             
-            <!-- Label tag (inside collar) -->
-            <rect x="385" y="215" width="30" height="12" 
+            <!-- Side shadows for depth -->
+            <path d="M 210 270 L 210 690 Q 210 710 215 715" 
+                  stroke="${this.darkenColor(color, 25)}" 
+                  stroke-width="12" 
+                  opacity="0.15" 
+                  fill="none"/>
+            <path d="M 590 270 L 590 690 Q 590 710 585 715" 
+                  stroke="${this.darkenColor(color, 20)}" 
+                  stroke-width="10" 
+                  opacity="0.12" 
+                  fill="none"/>
+            
+            <!-- Label tag (inside collar with realistic details) -->
+            <rect x="382" y="215" width="36" height="14" 
                   fill="#fff" 
                   stroke="#ccc" 
                   stroke-width="0.5" 
-                  rx="1"/>
-            <text x="400" y="223" 
+                  rx="1.5"/>
+            <text x="400" y="224" 
                   font-family="Arial, sans-serif" 
-                  font-size="6" 
-                  fill="#999" 
+                  font-size="7" 
+                  font-weight="600"
+                  fill="#666" 
                   text-anchor="middle">8BitWear</text>
             
             <!-- Product label at bottom -->
-            <text x="400" y="950" 
-                  font-family="Arial, sans-serif" 
-                  font-size="18" 
-                  fill="#999" 
+            <text x="400" y="960" 
+                  font-family="'Space Grotesk', Arial, sans-serif" 
+                  font-size="20" 
+                  font-weight="500"
+                  fill="#888" 
                   text-anchor="middle">${label}</text>
         </svg>`;
     }
@@ -2006,16 +2221,41 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         const isLeft = view === 'side-left';
         return `<svg width="800" height="1000" xmlns="http://www.w3.org/2000/svg">
             <defs>
+                <!-- Enhanced fabric texture for side view -->
+                <pattern id="fabricSide" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+                    <rect width="6" height="6" fill="${color}"/>
+                    <circle cx="2" cy="2" r="0.3" fill="${this.darkenColor(color, 5)}" opacity="0.2"/>
+                    <circle cx="4" cy="4" r="0.3" fill="${this.lightenColor(color, 3)}" opacity="0.15"/>
+                </pattern>
+                
+                <!-- Side gradient (left to right or right to left) -->
                 <linearGradient id="sideGrad" x1="${isLeft ? '0%' : '100%'}" y1="0%" x2="${isLeft ? '100%' : '0%'}" y2="0%">
-                    <stop offset="0%" style="stop-color:${this.darkenColor(color, 20)};stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:${color};stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:${this.lightenColor(color, 10)};stop-opacity:1" />
+                    <stop offset="0%" style="stop-color:${this.darkenColor(color, 25)};stop-opacity:1" />
+                    <stop offset="30%" style="stop-color:${this.darkenColor(color, 10)};stop-opacity:1" />
+                    <stop offset="70%" style="stop-color:${color};stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:${this.lightenColor(color, 15)};stop-opacity:1" />
                 </linearGradient>
+                
+                <!-- Sleeve gradient -->
+                <radialGradient id="sleeveGrad" cx="50%" cy="50%">
+                    <stop offset="0%" style="stop-color:${this.lightenColor(color, 5)};stop-opacity:1" />
+                    <stop offset="60%" style="stop-color:${this.darkenColor(color, 10)};stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:${this.darkenColor(color, 20)};stop-opacity:1" />
+                </radialGradient>
+                
+                <!-- Vertical gradient for lighting -->
+                <linearGradient id="verticalSideGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#fff;stop-opacity:0.1" />
+                    <stop offset="50%" style="stop-color:#fff;stop-opacity:0" />
+                    <stop offset="100%" style="stop-color:#000;stop-opacity:0.15" />
+                </linearGradient>
+                
+                <!-- Shadow filter -->
                 <filter id="softShadow2">
-                    <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-                    <feOffset dx="${isLeft ? '2' : '-2'}" dy="2" result="offsetblur"/>
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+                    <feOffset dx="${isLeft ? '3' : '-3'}" dy="3" result="offsetblur"/>
                     <feComponentTransfer>
-                        <feFuncA type="linear" slope="0.3"/>
+                        <feFuncA type="linear" slope="0.4"/>
                     </feComponentTransfer>
                     <feMerge>
                         <feMergeNode/>
@@ -2024,31 +2264,204 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
                 </filter>
             </defs>
             
-            <!-- Clean background -->
+            <!-- Clean background with subtle gradient -->
             <rect width="800" height="1000" fill="#f5f5f7"/>
+            <rect width="800" height="1000" fill="url(#verticalSideGrad)" opacity="0.3"/>
             
-            <!-- T-Shirt side view -->
+            <!-- Shadow on ground -->
+            <ellipse cx="400" cy="920" rx="150" ry="25" fill="#000" opacity="0.08"/>
+            
+            <!-- T-Shirt side view body -->
             ${isLeft 
-                ? `<path d="M 300 200 L 250 250 L 230 300 L 230 680 L 250 720 L 550 720 L 570 680 L 570 300 L 550 250 Z" 
-                        fill="url(#sideGrad)" stroke="#ddd" stroke-width="2" filter="url(#softShadow2)"/>`
-                : `<path d="M 500 200 L 550 250 L 570 300 L 570 680 L 550 720 L 250 720 L 230 680 L 230 300 L 250 250 Z" 
-                        fill="url(#sideGrad)" stroke="#ddd" stroke-width="2" filter="url(#softShadow2)"/>`
+                ? `<!-- Left side view (shoulder visible on right) -->
+                   <path d="M 320 200 
+                            Q 300 210 270 250 
+                            L 250 300 
+                            L 240 680 
+                            Q 240 710 260 720
+                            L 530 720
+                            Q 550 710 550 680
+                            L 540 300
+                            Q 520 240 510 220
+                            Z" 
+                         fill="url(#sideGrad)" 
+                         stroke="${this.darkenColor(color, 25)}" 
+                         stroke-width="1.5"
+                         filter="url(#softShadow2)"/>
+                   
+                   <!-- Fabric texture overlay -->
+                   <path d="M 320 200 
+                            Q 300 210 270 250 
+                            L 250 300 
+                            L 240 680 
+                            Q 240 710 260 720
+                            L 530 720
+                            Q 550 710 550 680
+                            L 540 300
+                            Q 520 240 510 220
+                            Z" 
+                         fill="url(#fabricSide)" 
+                         opacity="0.5"/>
+                   
+                   <!-- Vertical lighting -->
+                   <path d="M 320 200 
+                            Q 300 210 270 250 
+                            L 250 300 
+                            L 240 680 
+                            Q 240 710 260 720
+                            L 530 720
+                            Q 550 710 550 680
+                            L 540 300
+                            Q 520 240 510 220
+                            Z" 
+                         fill="url(#verticalSideGrad)"/>`
+                : `<!-- Right side view (shoulder visible on left) -->
+                   <path d="M 480 200 
+                            Q 500 210 530 250 
+                            L 550 300 
+                            L 560 680 
+                            Q 560 710 540 720
+                            L 270 720
+                            Q 250 710 250 680
+                            L 260 300
+                            Q 280 240 290 220
+                            Z" 
+                         fill="url(#sideGrad)" 
+                         stroke="${this.darkenColor(color, 25)}" 
+                         stroke-width="1.5"
+                         filter="url(#softShadow2)"/>
+                   
+                   <!-- Fabric texture overlay -->
+                   <path d="M 480 200 
+                            Q 500 210 530 250 
+                            L 550 300 
+                            L 560 680 
+                            Q 560 710 540 720
+                            L 270 720
+                            Q 250 710 250 680
+                            L 260 300
+                            Q 280 240 290 220
+                            Z" 
+                         fill="url(#fabricSide)" 
+                         opacity="0.5"/>
+                   
+                   <!-- Vertical lighting -->
+                   <path d="M 480 200 
+                            Q 500 210 530 250 
+                            L 550 300 
+                            L 560 680 
+                            Q 560 710 540 720
+                            L 270 720
+                            Q 250 710 250 680
+                            L 260 300
+                            Q 280 240 290 220
+                            Z" 
+                         fill="url(#verticalSideGrad)"/>`
             }
             
-            <!-- Sleeve (prominent) -->
+            <!-- Sleeve (bicep area - prominent and realistic) -->
             ${isLeft
-                ? `<ellipse cx="235" cy="400" rx="80" ry="140" fill="${this.darkenColor(color, 15)}" stroke="#ddd" stroke-width="2" opacity="0.9"/>`
-                : `<ellipse cx="565" cy="400" rx="80" ry="140" fill="${this.darkenColor(color, 15)}" stroke="#ddd" stroke-width="2" opacity="0.9"/>`
+                ? `<!-- Left sleeve (visible on the left side) -->
+                   <ellipse cx="255" cy="380" rx="70" ry="130" 
+                            fill="url(#sleeveGrad)" 
+                            stroke="${this.darkenColor(color, 25)}" 
+                            stroke-width="1.5"/>
+                   <ellipse cx="255" cy="380" rx="70" ry="130" 
+                            fill="url(#fabricSide)" 
+                            opacity="0.4"/>
+                   <!-- Sleeve highlight -->
+                   <ellipse cx="245" cy="370" rx="25" ry="50" 
+                            fill="${this.lightenColor(color, 25)}" 
+                            opacity="0.3"/>
+                   <!-- Sleeve shadow/fold -->
+                   <path d="M 255 310 Q 250 350 252 410" 
+                         stroke="${this.darkenColor(color, 30)}" 
+                         stroke-width="2" 
+                         opacity="0.3" 
+                         fill="none"/>`
+                : `<!-- Right sleeve (visible on the right side) -->
+                   <ellipse cx="545" cy="380" rx="70" ry="130" 
+                            fill="url(#sleeveGrad)" 
+                            stroke="${this.darkenColor(color, 25)}" 
+                            stroke-width="1.5"/>
+                   <ellipse cx="545" cy="380" rx="70" ry="130" 
+                            fill="url(#fabricSide)" 
+                            opacity="0.4"/>
+                   <!-- Sleeve highlight -->
+                   <ellipse cx="555" cy="370" rx="25" ry="50" 
+                            fill="${this.lightenColor(color, 25)}" 
+                            opacity="0.3"/>
+                   <!-- Sleeve shadow/fold -->
+                   <path d="M 545 310 Q 550 350 548 410" 
+                         stroke="${this.darkenColor(color, 30)}" 
+                         stroke-width="2" 
+                         opacity="0.3" 
+                         fill="none"/>`
             }
             
-            <!-- Collar hint -->
+            <!-- Collar/neckline hint (side view) -->
             ${isLeft
-                ? `<path d="M 520 210 Q 540 220 550 240" stroke="${this.darkenColor(color, 30)}" stroke-width="2" fill="none"/>`
-                : `<path d="M 280 210 Q 260 220 250 240" stroke="${this.darkenColor(color, 30)}" stroke-width="2" fill="none"/>`
+                ? `<path d="M 505 210 Q 520 220 528 240" 
+                         stroke="${this.darkenColor(color, 30)}" 
+                         stroke-width="2.5" 
+                         stroke-linecap="round"
+                         fill="none"/>
+                   <ellipse cx="508" cy="215" rx="8" ry="12" 
+                            fill="${this.darkenColor(color, 25)}"/>`
+                : `<path d="M 295 210 Q 280 220 272 240" 
+                         stroke="${this.darkenColor(color, 30)}" 
+                         stroke-width="2.5" 
+                         stroke-linecap="round"
+                         fill="none"/>
+                   <ellipse cx="292" cy="215" rx="8" ry="12" 
+                            fill="${this.darkenColor(color, 25)}"/>`
             }
             
-            <!-- Product label -->
-            <text x="400" y="950" font-family="Arial, sans-serif" font-size="18" fill="#999" text-anchor="middle">${label}</text>
+            <!-- Side seam line -->
+            ${isLeft
+                ? `<line x1="540" y1="300" x2="550" y2="680" 
+                         stroke="${this.darkenColor(color, 15)}" 
+                         stroke-width="1.5" 
+                         opacity="0.4"
+                         stroke-dasharray="8,6"/>`
+                : `<line x1="260" y1="300" x2="250" y2="680" 
+                         stroke="${this.darkenColor(color, 15)}" 
+                         stroke-width="1.5" 
+                         opacity="0.4"
+                         stroke-dasharray="8,6"/>`
+            }
+            
+            <!-- Body curve/fold for realism -->
+            ${isLeft
+                ? `<path d="M 260 450 Q 270 450 280 450" 
+                         stroke="${this.darkenColor(color, 12)}" 
+                         stroke-width="1.5" 
+                         opacity="0.25" 
+                         fill="none"/>
+                   <path d="M 520 450 Q 510 448 500 450" 
+                         stroke="${this.lightenColor(color, 8)}" 
+                         stroke-width="1.5" 
+                         opacity="0.2" 
+                         fill="none"/>`
+                : `<path d="M 540 450 Q 530 450 520 450" 
+                         stroke="${this.darkenColor(color, 12)}" 
+                         stroke-width="1.5" 
+                         opacity="0.25" 
+                         fill="none"/>
+                   <path d="M 280 450 Q 290 448 300 450" 
+                         stroke="${this.lightenColor(color, 8)}" 
+                         stroke-width="1.5" 
+                         opacity="0.2" 
+                         fill="none"/>`
+            }
+            
+            <!-- Product label at bottom -->
+            <text x="400" y="960" 
+                  font-family="'Space Grotesk', Arial, sans-serif" 
+                  font-size="20" 
+                  font-weight="500"
+                  fill="#888" 
+                  text-anchor="middle">${label}</text>
         </svg>`;
     }
     
@@ -2275,7 +2688,9 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
             this.updateLoadingText('🎨 Pixel art oluşturuluyor... (OpenAI gpt-image-1)');
             
             // Convert base64 string to blob
-            const byteCharacters = atob(this.uploadedImageBase64);
+            // Remove data URL prefix if present
+            const base64Data = this.uploadedImageBase64.replace(/^data:image\/\w+;base64,/, '');
+            const byteCharacters = atob(base64Data);
             const byteNumbers = new Array(byteCharacters.length);
             for (let i = 0; i < byteCharacters.length; i++) {
                 byteNumbers[i] = byteCharacters.charCodeAt(i);
