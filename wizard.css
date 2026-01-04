@@ -814,10 +814,10 @@ body {
 
 .mockup-preview .mockup-overlay {
     position: absolute;
-    top: 50%;
+    top: 42%;
     left: 50%;
-    width: 400px !important;
-    height: 400px !important;
+    width: 100px !important;
+    height: 100px !important;
     transform: translate(-50%, -50%);
     pointer-events: none;
     display: flex;
