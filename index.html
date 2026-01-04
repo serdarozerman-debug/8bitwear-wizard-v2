@@ -336,24 +336,44 @@
 
     <!-- Load config first -->
     <script>
-    // Decode and load config from encoded file
+    // Decode and load config from encoded file (UTF-8 safe)
     fetch('config.encoded.txt')
         .then(r => r.text())
         .then(encoded => {
-            const decoded = atob(encoded);
+            // UTF-8 safe base64 decode
+            const binary = atob(encoded.trim());
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+            const decoded = new TextDecoder('utf-8').decode(bytes);
+            
             const script = document.createElement('script');
             script.textContent = decoded;
             document.head.appendChild(script);
             console.log('✅ Config loaded');
+            
+            // Load remaining scripts after config
+            const scripts = [
+                'mockup-config.js',
+                'shopify-config.js',
+                'shopify-api.js',
+                'wizard.js'
+            ];
+            
+            scripts.forEach((src, idx) => {
+                const s = document.createElement('script');
+                s.src = src;
+                if (idx < scripts.length - 1) {
+                    s.onload = () => console.log(`✅ ${src} loaded`);
+                }
+                document.body.appendChild(s);
+            });
         })
         .catch(err => {
             console.error('❌ Config load error:', err);
             alert('Configuration error. Please refresh the page.');
         });
     </script>
-    <script src="mockup-config.js"></script>
-    <script src="shopify-config.js"></script>
-    <script src="shopify-api.js"></script>
-    <script src="wizard.js"></script>
 </body>
 </html>
