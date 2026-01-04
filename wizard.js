@@ -262,10 +262,10 @@ class PixelWizard {
         // Step 1 elements
         this.uploadZone = document.getElementById('uploadZone');
         this.fileInput = document.getElementById('fileInput');
-        this.uploadPreview = document.getElementById('uploadPreview');
-        this.previewImage = document.getElementById('previewImage');
-        this.removeImageBtn = document.getElementById('removeImage');
-        this.btnToStep2 = document.getElementById('btnToStep2');
+        this.previewContainer = document.getElementById('previewContainer'); // Preview container
+        this.previewImage = document.getElementById('imagePreview'); // Changed from previewImage
+        this.changeImageBtn = document.getElementById('changeImageBtn'); // Changed from removeImage
+        this.btnToStep2 = document.getElementById('nextStep1'); // Changed from btnToStep2
         
         // Step 2 elements
         this.originalImage = document.getElementById('originalImage');
@@ -322,7 +322,7 @@ class PixelWizard {
         this.uploadZone?.addEventListener('dragleave', (e) => this.handleDragLeave(e));
         this.uploadZone?.addEventListener('drop', (e) => this.handleDrop(e));
         
-        this.removeImageBtn?.addEventListener('click', (e) => {
+        this.changeImageBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
             this.removeImage();
         });
