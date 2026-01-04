@@ -380,6 +380,15 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Step 2 result images (original + pixel art) */
+.result-container img,
+#originalImage,
+#pixelArtResult {
+    max-height: 200px;
+    object-fit: contain;
+    width: auto;
+}
+
 .remove-image {
     position: absolute;
     top: var(--spacing-sm);
