@@ -329,6 +329,12 @@ class PixelWizard {
             }
         });
         
+        // Upload button explicit click
+        document.getElementById('uploadBtn')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.fileInput?.click();
+        });
+        
         this.fileInput?.addEventListener('change', (e) => this.handleFileSelect(e));
         
         // Drag and drop
