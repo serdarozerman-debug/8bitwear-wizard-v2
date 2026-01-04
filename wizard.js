@@ -267,11 +267,18 @@ class PixelWizard {
         
         // Step 1 elements
         this.uploadZone = document.getElementById('uploadZone');
+        this.uploadBtn = document.getElementById('uploadBtn');
         this.fileInput = document.getElementById('fileInput');
         this.previewContainer = document.getElementById('previewContainer'); // Preview container
         this.previewImage = document.getElementById('imagePreview'); // Changed from previewImage
         this.changeImageBtn = document.getElementById('changeImageBtn'); // Changed from removeImage
         this.btnToStep2 = document.getElementById('nextStep1'); // Changed from btnToStep2
+        
+        // Debug file input
+        console.log('📁 File input check:');
+        console.log('  fileInput:', this.fileInput ? '✅' : '❌');
+        console.log('  uploadBtn:', this.uploadBtn ? '✅' : '❌');
+        console.log('  uploadZone:', this.uploadZone ? '✅' : '❌');
         
         // Step 2 elements - updated IDs to match HTML
         this.processingContainer = document.getElementById('processingContainer');
@@ -322,20 +329,32 @@ class PixelWizard {
     }
     
     bindEvents() {
-        // Step 1: Upload
+        // Step 1: Upload - Multiple triggers for file selection
+        
+        // Upload button (primary)
+        this.uploadBtn?.addEventListener('click', (e) => {
+            console.log('🖱️ Upload button clicked');
+            e.preventDefault();
+            e.stopPropagation();
+            if (this.fileInput) {
+                this.fileInput.click();
+            } else {
+                console.error('❌ fileInput not found!');
+            }
+        });
+        
+        // Upload zone (secondary)
         this.uploadZone?.addEventListener('click', (e) => {
-            if (!e.target.closest('.remove-image')) {
+            console.log('🖱️ Upload zone clicked');
+            if (!e.target.closest('button')) {
                 this.fileInput?.click();
             }
         });
         
-        // Upload button explicit click
-        document.getElementById('uploadBtn')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.fileInput?.click();
+        this.fileInput?.addEventListener('change', (e) => {
+            console.log('📂 File selected:', e.target.files[0]?.name);
+            this.handleFileSelect(e);
         });
-        
-        this.fileInput?.addEventListener('change', (e) => this.handleFileSelect(e));
         
         // Drag and drop
         this.uploadZone?.addEventListener('dragover', (e) => this.handleDragOver(e));

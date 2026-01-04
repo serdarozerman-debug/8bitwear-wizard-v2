@@ -783,10 +783,12 @@ body {
 
 /* Mockup Preview (Step 3 customization) */
 .mockup-preview {
+    position: relative;
     width: 100%;
     max-width: 800px;
     margin: var(--spacing-lg) auto 0;
     text-align: center;
+    overflow: visible !important;
 }
 
 .mockup-preview h4 {
@@ -800,7 +802,7 @@ body {
     max-width: 600px;
     margin: 0 auto var(--spacing-md);
     border-radius: var(--radius-md);
-    overflow: visible;
+    overflow: visible !important;
 }
 
 .mockup-container img#liveMockup {
@@ -814,9 +816,9 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
+    width: 400px !important;
+    height: 400px !important;
     transform: translate(-50%, -50%);
-    width: 80%;
-    height: 80%;
     pointer-events: none;
     display: flex;
     align-items: center;
@@ -824,9 +826,14 @@ body {
 }
 
 .mockup-preview .mockup-overlay img {
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
     object-fit: contain;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
 }
 
 .mockup-info {
