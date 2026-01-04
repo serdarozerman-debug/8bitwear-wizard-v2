@@ -2046,17 +2046,18 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     }
     
     updateMockupPosition() {
-        // Update pixel art position on mockup using CSS classes + dynamic config
+        // SIMPLIFIED: For Step 3 preview, just show logo centered and large
         const overlay = document.getElementById('mockupOverlay');
         const overlayImg = document.getElementById('mockupPixelArt');
         if (!overlay || !overlayImg) return;
         
-        // Get print area config from MOCKUP_CONFIG
-        const productConfig = window.MOCKUP_CONFIG?.[this.selectedProduct];
-        if (!productConfig) {
-            console.error('❌ No mockup config found for product:', this.selectedProduct);
-            return;
-        }
+        // Show overlay
+        overlay.style.display = 'flex';
+        
+        // For Step 3 preview, position is ignored - just show large centered logo
+        // User can see different positions but we show them all centered for preview
+        console.log('✅ Mockup position updated (centered for preview)');
+    }
         
         const printArea = productConfig.printAreas[this.selectedPosition];
         if (!printArea) {
