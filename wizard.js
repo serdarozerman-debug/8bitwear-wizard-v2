@@ -800,8 +800,8 @@ class PixelWizard {
     simulateAIConversion() {
         this.isProcessing = true;
         let progress = 0;
-        this.loadingBar.style.width = '0%';
-        this.updateLoadingText('AI başlatılıyor...');
+        
+        this.updateProcessingText('AI başlatılıyor...');
         
         const messages = [
             'Görsel analiz ediliyor...',
@@ -818,7 +818,7 @@ class PixelWizard {
             
             // Update message
             if (progress > messageIndex * 20 && messageIndex < messages.length) {
-                this.updateLoadingText(messages[messageIndex]);
+                this.updateProcessingText(messages[messageIndex]);
                 messageIndex++;
             }
             
@@ -830,7 +830,7 @@ class PixelWizard {
                 // Show result after a brief delay
                 setTimeout(() => this.showDemoResult(), 500);
             }
-            this.loadingBar.style.width = `${progress}%`;
+            
         }, 300);
     }
     
@@ -880,8 +880,8 @@ class PixelWizard {
     // OpenAI DALL-E API çağrısı (via n8n webhook)
     async callOpenAI() {
         this.isProcessing = true;
-        this.loadingBar.style.width = '10%';
-        this.updateLoadingText('AI\'ya bağlanılıyor...');
+        
+        this.updateProcessingText('AI\'ya bağlanılıyor...');
         
         try {
             // Validate image
@@ -898,8 +898,8 @@ class PixelWizard {
             console.log('🚀 OpenAI DALL-E API\'ye n8n webhook üzerinden bağlanılıyor...');
             console.log('   Image size:', Math.round(imageSizeKB), 'KB');
             
-            this.loadingBar.style.width = '20%';
-            this.updateLoadingText('Görsel analiz ediliyor...');
+            
+            this.updateProcessingText('Görsel analiz ediliyor...');
             
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), CONFIG.API_TIMEOUT);
@@ -932,8 +932,8 @@ class PixelWizard {
             console.log('   - pixelArtUrl:', result.pixelArtUrl);
             console.log('   - error:', result.error);
             
-                this.loadingBar.style.width = '100%';
-            this.updateLoadingText('Tamamlandı! 🎉');
+                
+            this.updateProcessingText('Tamamlandı! 🎉');
             
             // Check result - more flexible parsing
             let pixelArtUrl = result.pixelArtUrl || result.url || (result.data && result.data[0] && result.data[0].url);
@@ -963,13 +963,13 @@ class PixelWizard {
                     this.isProcessing = false;
             
             if (error.name === 'AbortError') {
-                this.updateLoadingText('⏱️ Zaman aşımı');
+                this.updateProcessingText('⏱️ Zaman aşımı');
                 setTimeout(() => {
                     alert('API zaman aşımına uğradı. Lütfen tekrar deneyin.');
                     this.goToStep(1);
                 }, 1000);
             } else {
-                this.updateLoadingText('❌ Hata oluştu');
+                this.updateProcessingText('❌ Hata oluştu');
                 setTimeout(() => {
                     alert('Hata: ' + error.message);
                     this.goToStep(1);
@@ -981,8 +981,8 @@ class PixelWizard {
     // Direct OpenAI API call (CORS bypass)
     async callOpenAIDirect() {
         this.isProcessing = true;
-        this.loadingBar.style.width = '10%';
-        this.updateLoadingText('AI\'ya bağlanılıyor...');
+        
+        this.updateProcessingText('AI\'ya bağlanılıyor...');
         
         try {
             if (!this.uploadedImageBase64) {
@@ -991,8 +991,8 @@ class PixelWizard {
             
             console.log('🚀 Direct OpenAI DALL-E 3 API çağrısı...');
             
-            this.loadingBar.style.width = '30%';
-            this.updateLoadingText('Pixel art oluşturuluyor... (30-60 saniye)');
+            
+            this.updateProcessingText('Pixel art oluşturuluyor... (30-60 saniye)');
             
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), CONFIG.API_TIMEOUT);
@@ -1068,8 +1068,8 @@ MUST BE:
             const result = await response.json();
             console.log('✅ OpenAI result:', result);
             
-                this.loadingBar.style.width = '100%';
-            this.updateLoadingText('Tamamlandı! 🎉');
+                
+            this.updateProcessingText('Tamamlandı! 🎉');
             
             // Get image URL
             if (result.data && result.data[0] && result.data[0].url) {
@@ -1090,13 +1090,13 @@ MUST BE:
                     this.isProcessing = false;
             
             if (error.name === 'AbortError') {
-                this.updateLoadingText('⏱️ Zaman aşımı');
+                this.updateProcessingText('⏱️ Zaman aşımı');
                 setTimeout(() => {
                     alert('API zaman aşımına uğradı. Lütfen tekrar deneyin.');
                     this.goToStep(1);
                 }, 1000);
             } else {
-                this.updateLoadingText('❌ Hata oluştu');
+                this.updateProcessingText('❌ Hata oluştu');
                 setTimeout(() => {
                     alert('Hata: ' + error.message);
                     this.goToStep(1);
@@ -1108,8 +1108,8 @@ MUST BE:
     // DALL-E 2 Edit API call (image-to-image transformation)
     async callOpenAIEdit() {
         this.isProcessing = true;
-        this.loadingBar.style.width = '10%';
-        this.updateLoadingText('AI\'ya bağlanılıyor...');
+        
+        this.updateProcessingText('AI\'ya bağlanılıyor...');
         
         try {
             if (!this.uploadedImageBase64) {
@@ -1118,8 +1118,8 @@ MUST BE:
             
             console.log('🚀 DALL-E 2 Edits API çağrısı (image-to-image)...');
             
-            this.loadingBar.style.width = '20%';
-            this.updateLoadingText('Görsel PNG\'ye dönüştürülüyor...');
+            
+            this.updateProcessingText('Görsel PNG\'ye dönüştürülüyor...');
             
             // Convert uploaded image to PNG using Canvas
             const img = new Image();
@@ -1170,8 +1170,8 @@ MUST BE:
                 throw new Error('Görsel çok büyük (max 4MB). Lütfen daha küçük bir görsel seçin.');
             }
             
-            this.loadingBar.style.width = '30%';
-            this.updateLoadingText('Pixel art oluşturuluyor... (20-40 saniye)');
+            
+            this.updateProcessingText('Pixel art oluşturuluyor... (20-40 saniye)');
             
             // Create FormData for multipart/form-data
             const formData = new FormData();
@@ -1217,8 +1217,8 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
             
             console.log('📡 DALL-E 2 Edits response:', response.status);
             
-            this.loadingBar.style.width = '80%';
-            this.updateLoadingText('Neredeyse bitti...');
+            
+            this.updateProcessingText('Neredeyse bitti...');
             
             if (!response.ok) {
                 const errorText = await response.text();
@@ -1229,8 +1229,8 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
             const result = await response.json();
             console.log('✅ DALL-E 2 result:', result);
             
-            this.loadingBar.style.width = '100%';
-            this.updateLoadingText('Tamamlandı! 🎉');
+            
+            this.updateProcessingText('Tamamlandı! 🎉');
             
             // Get image URL
             if (result.data && result.data[0] && result.data[0].url) {
@@ -1253,13 +1253,13 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
             this.isProcessing = false;
             
             if (error.name === 'AbortError') {
-                this.updateLoadingText('⏱️ Zaman aşımı');
+                this.updateProcessingText('⏱️ Zaman aşımı');
                 setTimeout(() => {
                     alert('API zaman aşımına uğradı. Lütfen tekrar deneyin.');
                     this.goToStep(1);
                 }, 1000);
             } else {
-                this.updateLoadingText('❌ Hata oluştu');
+                this.updateProcessingText('❌ Hata oluştu');
                 setTimeout(() => {
                     alert('Hata: ' + error.message);
                     this.goToStep(1);
@@ -1310,8 +1310,8 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     async callHybridDirect() {
         console.log('🎨 HYBRID DIRECT: Algorithmic + Replicate API başladı...');
         this.isProcessing = true;
-        this.loadingBar.style.width = '10%';
-        this.updateLoadingText('🎨 Algoritmik pixel art oluşturuluyor...');
+        
+        this.updateProcessingText('🎨 Algoritmik pixel art oluşturuluyor...');
         
         try {
             if (!CONFIG.REPLICATE_API_KEY) {
@@ -1319,13 +1319,13 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
             }
             
             // Step 1: Client-side algorithmic pixelation (24x24 - balanced for NSFW bypass + quality)
-            this.loadingBar.style.width = '20%';
+            
             const pixelatedImageBase64 = await this.algorithmicPixelArt(this.uploadedImage, 24);
             console.log('✅ Algorithmic pixelation tamamlandı (24x24)');
             
             // Step 2: Start Replicate prediction (SDXL img2img with base64)
-            this.loadingBar.style.width = '30%';
-            this.updateLoadingText('🤖 AI refinement başlatılıyor...');
+            
+            this.updateProcessingText('🤖 AI refinement başlatılıyor...');
             
             console.log('📊 Base64 length:', pixelatedImageBase64.length, 'chars (~', Math.round(pixelatedImageBase64.length / 1024), 'KB)');
             
@@ -1362,8 +1362,8 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
             console.log('🚀 Replicate prediction started:', predictionId);
             
             // Step 3: Poll for result
-            this.loadingBar.style.width = '50%';
-            this.updateLoadingText('🔄 AI ile pixel art oluşturuluyor... (20-40 saniye)');
+            
+            this.updateProcessingText('🔄 AI ile pixel art oluşturuluyor... (20-40 saniye)');
             
             let attempts = 0;
             const maxAttempts = 40; // 40 * 2s = 80s max
@@ -1393,15 +1393,15 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
                 
                 // Update progress
                 const progress = 50 + (attempts / maxAttempts) * 45;
-                this.loadingBar.style.width = `${progress}%`;
+                
                 
                 if (status === 'succeeded') {
                     console.log('✅ Replicate succeeded!');
                     const outputUrl = Array.isArray(pollResult.output) ? pollResult.output[0] : pollResult.output;
                     
                     if (outputUrl) {
-                        this.loadingBar.style.width = '100%';
-                        this.updateLoadingText('✅ Tamamlandı! 🎉');
+                        
+                        this.updateProcessingText('✅ Tamamlandı! 🎉');
                         
                         this.pixelArtResult = outputUrl;
                         
@@ -1425,7 +1425,7 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
             console.error('❌ Hybrid Direct Hatası:', error);
             this.isProcessing = false;
             
-            this.updateLoadingText('❌ Hata oluştu');
+            this.updateProcessingText('❌ Hata oluştu');
             setTimeout(() => {
                 alert('Hata: ' + error.message);
                 this.goToStep(1);
@@ -1440,20 +1440,20 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     async callHybridAI() {
         console.log('🎨 HYBRID MODE: Algorithmic + AI başladı...');
         this.isProcessing = true;
-        this.loadingBar.style.width = '10%';
-        this.updateLoadingText('Algoritmik pixel reduction başlıyor...');
+        
+        this.updateProcessingText('Algoritmik pixel reduction başlıyor...');
         
         try {
             // Step 1: Algorithmic pixel art (client-side)
-            this.loadingBar.style.width = '20%';
-            this.updateLoadingText('64x64 pixel art oluşturuluyor...');
+            
+            this.updateProcessingText('64x64 pixel art oluşturuluyor...');
             
             const pixelatedImage = await this.algorithmicPixelArt(this.uploadedImage);
             console.log('✅ Algorithmic pixel art tamamlandı');
             
             // Step 2: Start AI cleanup (Replicate via n8n)
-            this.loadingBar.style.width = '30%';
-            this.updateLoadingText('AI cleanup başlatılıyor...');
+            
+            this.updateProcessingText('AI cleanup başlatılıyor...');
             
             const startResponse = await fetch(CONFIG.N8N_WEBHOOK_URL, {
                 method: 'POST',
@@ -1477,8 +1477,8 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
             console.log('🚀 Prediction started:', predictionId);
             
             // Step 3: Poll for result (client-side)
-            this.loadingBar.style.width = '40%';
-            this.updateLoadingText('AI ile temizleniyor... (30-60 saniye)');
+            
+            this.updateProcessingText('AI ile temizleniyor... (30-60 saniye)');
             
             let attempts = 0;
             const maxAttempts = 30; // 30 * 3s = 90s max
@@ -1512,15 +1512,15 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
                 
                 // Update progress bar
                 const progress = 40 + (attempts / maxAttempts) * 50;
-                this.loadingBar.style.width = `${progress}%`;
+                
                 
                 if (status === 'succeeded') {
                     console.log('✅ AI cleanup succeeded!');
                     const outputUrl = pollResult.output && pollResult.output[0];
                     
                     if (outputUrl) {
-                        this.loadingBar.style.width = '100%';
-                        this.updateLoadingText('Tamamlandı! 🎉');
+                        
+                        this.updateProcessingText('Tamamlandı! 🎉');
                         
                         this.pixelArtResult = outputUrl;
             
@@ -1546,7 +1546,7 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
             console.error('❌ Hybrid API Hatası:', error);
             this.isProcessing = false;
             
-            this.updateLoadingText('❌ Hata oluştu');
+            this.updateProcessingText('❌ Hata oluştu');
             setTimeout(() => {
                 alert('Hata: ' + error.message);
                 this.goToStep(1);
@@ -1714,12 +1714,12 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         return setInterval(() => {
             if (progress < 95) {
                 progress += Math.random() * 3;
-                this.loadingBar.style.width = `${Math.min(progress, 95)}%`;
+                
                 
                 // Update message based on progress
                 for (const msg of messages) {
                     if (progress >= msg.progress && progress < msg.progress + 15) {
-                        this.updateLoadingText(msg.text);
+                        this.updateProcessingText(msg.text);
                         break;
                     }
                 }
@@ -1779,7 +1779,7 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     
     showResultOptions() {
         // Display generated pixel art in Step 2
-        this.updateLoadingText('');
+        this.updateProcessingText('');
         
         // Create result preview and buttons if not exists
         let resultContainer = document.getElementById('resultOptionsContainer');
@@ -2779,16 +2779,16 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     async openaiPixelArt() {
         console.log('🚀 OpenAI Image Edit başladı...');
         this.isProcessing = true;
-        this.loadingBar.style.width = '10%';
-        this.updateLoadingText('🎨 OpenAI Image Edit API\'ya bağlanılıyor...');
+        
+        this.updateProcessingText('🎨 OpenAI Image Edit API\'ya bağlanılıyor...');
         
         try {
             if (!this.uploadedImageBase64) {
                 throw new Error('Görsel yüklenemedi. Lütfen tekrar deneyin.');
             }
             
-            this.loadingBar.style.width = '30%';
-            this.updateLoadingText('🎨 Pixel art oluşturuluyor... (OpenAI gpt-image-1)');
+            
+            this.updateProcessingText('🎨 Pixel art oluşturuluyor... (OpenAI gpt-image-1)');
             
             // Convert base64 string to blob
             // Remove data URL prefix if present
@@ -2866,7 +2866,7 @@ OUTPUT:
                 body: formData,
             });
             
-            this.loadingBar.style.width = '80%';
+            
             
             if (!response.ok) {
                 const errorText = await response.text();
@@ -2880,8 +2880,8 @@ OUTPUT:
                 throw new Error('OpenAI did not return image');
             }
             
-            this.loadingBar.style.width = '100%';
-            this.updateLoadingText('✅ Tamamlandı!');
+            
+            this.updateProcessingText('✅ Tamamlandı!');
             
             // Store result
             this.pixelArtResult = result.image_data_url;
@@ -2896,7 +2896,7 @@ OUTPUT:
         } catch (error) {
             console.error('❌ OpenAI error:', error);
             this.isProcessing = false;
-            this.updateLoadingText('❌ Hata oluştu');
+            this.updateProcessingText('❌ Hata oluştu');
             
             setTimeout(() => {
                 const errorMsg = error.message || 'OpenAI bağlantı hatası';
@@ -2904,7 +2904,7 @@ OUTPUT:
                 this.goToStep(1);
             }, 1000);
         } finally {
-            this.loadingBar.style.width = '0%';
+            
         }
     }
     
@@ -2915,16 +2915,16 @@ OUTPUT:
     async geminiPixelArt() {
         console.log('🚀 Google Gemini - Nano Banana başladı...');
         this.isProcessing = true;
-        this.loadingBar.style.width = '10%';
-        this.updateLoadingText('🍌 Nano Banana\'ya bağlanılıyor...');
+        
+        this.updateProcessingText('🍌 Nano Banana\'ya bağlanılıyor...');
         
         try {
             if (!this.uploadedImageBase64) {
                 throw new Error('Görsel yüklenemedi. Lütfen tekrar deneyin.');
             }
             
-            this.loadingBar.style.width = '30%';
-            this.updateLoadingText('🎨 Pixel art oluşturuluyor... (Gemini 2.5 Flash)');
+            
+            this.updateProcessingText('🎨 Pixel art oluşturuluyor... (Gemini 2.5 Flash)');
             
             // Convert base64 string to blob (uploadedImageBase64 is base64 without data URL prefix)
             const byteCharacters = atob(this.uploadedImageBase64);
@@ -2964,7 +2964,7 @@ OUTPUT:
                 body: formData,
             });
             
-            this.loadingBar.style.width = '80%';
+            
             
             if (!response.ok) {
                 const errorText = await response.text();
@@ -2978,8 +2978,8 @@ OUTPUT:
                 throw new Error('Gemini did not return image');
             }
             
-            this.loadingBar.style.width = '100%';
-            this.updateLoadingText('✅ Tamamlandı!');
+            
+            this.updateProcessingText('✅ Tamamlandı!');
             
             // Store result
             this.pixelArtResult = result.image_data_url;
@@ -3003,7 +3003,7 @@ OUTPUT:
         } catch (error) {
             console.error('❌ Gemini error:', error);
             this.isProcessing = false;
-            this.updateLoadingText('❌ Hata oluştu');
+            this.updateProcessingText('❌ Hata oluştu');
             
             setTimeout(() => {
                 const errorMsg = error.message || 'Gemini bağlantı hatası';
@@ -3011,44 +3011,44 @@ OUTPUT:
                 this.goToStep(1);
             }, 1000);
         } finally {
-            this.loadingBar.style.width = '0%';
+            
         }
     }
     
     async leonardoPixelArt() {
         console.log('🚀 Leonardo AI - FLUX.1 Kontext başladı...');
         this.isProcessing = true;
-        this.loadingBar.style.width = '10%';
-        this.updateLoadingText('Leonardo AI\'ya bağlanılıyor...');
+        
+        this.updateProcessingText('Leonardo AI\'ya bağlanılıyor...');
         
         try {
             // Step 1: Upload init image to Leonardo
-            this.updateLoadingText('📤 Görsel yükleniyor...');
+            this.updateProcessingText('📤 Görsel yükleniyor...');
             const initImageId = await this.uploadToLeonardo();
             console.log('✅ Init image uploaded:', initImageId);
             
-            this.loadingBar.style.width = '30%';
+            
             
             // Step 2: Start generation
-            this.updateLoadingText('🎨 Cartoon pixel art oluşturuluyor... (30-60 saniye)');
+            this.updateProcessingText('🎨 Cartoon pixel art oluşturuluyor... (30-60 saniye)');
             const generationId = await this.createLeonardoGeneration(initImageId);
             console.log('✅ Generation started:', generationId);
             
-            this.loadingBar.style.width = '50%';
+            
             
             // Step 3: Poll for result
-            this.updateLoadingText('⏳ AI işliyor...');
+            this.updateProcessingText('⏳ AI işliyor...');
             const resultUrl = await this.pollLeonardoGeneration(generationId);
             console.log('✅ Generation complete:', resultUrl);
             
-            this.loadingBar.style.width = '90%';
+            
             
             // Step 4: Download and display
-            this.updateLoadingText('📥 Sonuç indiriliyor...');
+            this.updateProcessingText('📥 Sonuç indiriliyor...');
             const pixelArtDataUrl = await this.downloadImage(resultUrl);
             
-            this.loadingBar.style.width = '100%';
-            this.updateLoadingText('✅ Tamamlandı!');
+            
+            this.updateProcessingText('✅ Tamamlandı!');
             
             // Store result with timestamp to prevent cache
             this.pixelArtResult = pixelArtDataUrl;
@@ -3064,7 +3064,7 @@ OUTPUT:
         } catch (error) {
             console.error('❌ Leonardo AI error:', error);
             this.isProcessing = false;
-            this.updateLoadingText('❌ Hata oluştu');
+            this.updateProcessingText('❌ Hata oluştu');
             
             setTimeout(() => {
                 const errorMsg = error.message || 'Leonardo AI bağlantı hatası';
@@ -3175,7 +3175,7 @@ OUTPUT:
             
             // Update progress bar
             const progress = 50 + (attempt / maxAttempts) * 40;
-            this.loadingBar.style.width = `${progress}%`;
+            
         }
         
         throw new Error('Generation timeout');
