@@ -199,6 +199,13 @@ class PixelWizard {
         this.consentCheckbox = document.getElementById('consentCheckbox');
         this.btnCompleteOrder = document.getElementById('btnCompleteOrder');
         this.btnBackToStep3 = document.getElementById('btnBackToStep3');
+        
+        // Debug: Check if critical elements are found
+        if (!this.uploadZone) {
+            console.error('❌ uploadZone element not found!');
+            console.log('DOM state:', document.readyState);
+            console.log('Body children:', document.body ? document.body.children.length : 'no body');
+        }
     }
     
     bindEvents() {
