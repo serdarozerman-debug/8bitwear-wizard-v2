@@ -348,6 +348,32 @@ class PixelWizard {
         this.btnBackStep2?.addEventListener('click', () => this.goToStep(1));
         this.btnNextStep2?.addEventListener('click', () => this.goToStep(3));
         
+        // Step 3: Product Selection (cards)
+        const productCards = document.querySelectorAll('.product-card');
+        productCards?.forEach(card => {
+            card.addEventListener('click', () => {
+                // Remove active from all cards
+                productCards.forEach(c => c.classList.remove('active'));
+                // Mark clicked card as active
+                card.classList.add('active');
+                // Update product selection
+                this.selectedProduct = card.dataset.product;
+                // Show customization panel
+                const customPanel = document.getElementById('customizationPanel');
+                if (customPanel) {
+                    customPanel.style.display = 'block';
+                }
+                // Populate customization options (colors, sizes, positions)
+                this.populateCustomizationOptions();
+                // Update preview and mockup
+                this.updatePreview();
+                // Enable next button
+                const btnNextStep3 = document.getElementById('nextStep3');
+                if (btnNextStep3) btnNextStep3.disabled = false;
+                console.log('✅ Product selected:', this.selectedProduct);
+            });
+        });
+        
         // Step 3: Preview
         this.viewBtns?.forEach(btn => {
             btn.addEventListener('click', () => this.handleViewChange(btn));
@@ -1885,6 +1911,67 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         // Update mockup based on current selections
         this.updateMockup();
         this.updateSummary();
+    }
+    
+    
+    populateCustomizationOptions() {
+        // Populate colors
+        const colorOptions = document.getElementById('colorOptions');
+        if (colorOptions) {
+            colorOptions.innerHTML = '';
+            const colors = [
+                { id: 'black', name: 'Siyah', hex: '#1a1a1a' },
+                { id: 'white', name: 'Beyaz', hex: '#ffffff' },
+                { id: 'navy', name: 'Lacivert', hex: '#1e3a5f' },
+                { id: 'gray', name: 'Gri', hex: '#808080' }
+            ];
+            colors.forEach((color, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'color-btn' + (i === 0 ? ' active' : '');
+                btn.dataset.color = color.id;
+                btn.style.background = color.hex;
+                btn.style.border = color.id === 'white' ? '1px solid #ccc' : 'none';
+                btn.addEventListener('click', () => this.handleColorChange(btn));
+                colorOptions.appendChild(btn);
+            });
+        }
+        
+        // Populate sizes
+        const sizeOptions = document.getElementById('sizeOptions');
+        if (sizeOptions) {
+            sizeOptions.innerHTML = '';
+            const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+            sizes.forEach((size, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'size-btn' + (i === 2 ? ' active' : ''); // Default: L
+                btn.dataset.size = size;
+                btn.textContent = size;
+                btn.addEventListener('click', () => this.handleSizeChange(btn));
+                sizeOptions.appendChild(btn);
+            });
+        }
+        
+        // Populate positions
+        const positionOptions = document.getElementById('positionOptions');
+        if (positionOptions) {
+            positionOptions.innerHTML = '';
+            const positions = this.productPositions[this.selectedProduct];
+            positions.forEach((pos, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'position-btn' + (i === 0 ? ' active' : '');
+                btn.dataset.position = pos.id;
+                btn.innerHTML = `
+                    <span class="position-icon">${pos.icon}</span>
+                    <span>${pos.name}</span>
+                `;
+                btn.addEventListener('click', () => this.handlePositionChange(btn));
+                positionOptions.appendChild(btn);
+            });
+            // Set default position
+            if (positions.length > 0) {
+                this.selectedPosition = positions[0].id;
+            }
+        }
     }
     
     populatePositionSelector() {
