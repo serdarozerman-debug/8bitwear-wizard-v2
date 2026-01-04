@@ -183,6 +183,10 @@ class PixelWizard {
         this.attemptsLeft = 3;
         this.isProcessing = false;
         
+        // Progress bar placeholders (not used in Shopify iframe)
+        this.loadingBar = { style: { width: '' } };
+        this.updateLoadingText = () => {};
+        
         // Product state
         this.selectedProduct = 'tshirt';
         this.selectedColor = 'black';
