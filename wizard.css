@@ -814,8 +814,8 @@ body {
 
 .mockup-preview .mockup-overlay {
     position: absolute;
-    top: 42%;
-    left: 50%;
+    top: 52%;
+    left: 65%;
     width: 100px !important;
     height: 100px !important;
     transform: translate(-50%, -50%);
