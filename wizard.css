@@ -823,8 +823,8 @@ body {
 }
 
 .mockup-preview .mockup-overlay img {
-    max-width: 120%;
-    max-height: 120%;
+    max-width: 600%;
+    max-height: 600%;
     object-fit: contain;
 }
 
@@ -1250,18 +1250,18 @@ body {
 }
 
 .position-btn {
-    display: flex;
-    flex-direction: column;
+    display: inline-flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    min-width: 90px;
+    gap: 8px;
+    min-width: 120px;
     padding: 12px 16px;
     background: var(--bg-card);
     border: 2px solid var(--border-color);
     border-radius: var(--radius-md);
     color: var(--text-primary);
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
     transition: var(--transition-normal);
