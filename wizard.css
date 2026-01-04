@@ -455,6 +455,21 @@ body {
     100% { background-position: 200% 50%; }
 }
 
+/* Move Step 1 actions closer (right aligned on desktop) */
+.step[data-step="1"] .step-actions {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+    .step[data-step="1"] .step-actions {
+        justify-content: center;
+        padding: var(--spacing-md) 0;
+    }
+}
+
 .remove-image {
     position: absolute;
     top: var(--spacing-sm);
