@@ -179,7 +179,8 @@ class PixelWizard {
         this.uploadedImageOriginal = null; // Original high-quality version for backend
         this.uploadedImageBase64 = null;
         this.uploadedImageMimeType = null;
-        this.pixelArtResult = null;
+        this.pixelArtResultData = null; // base64 data string
+        this.pixelArtResult = null;     // alias string for backward compatibility
         this.attemptsLeft = 3;
         this.isProcessing = false;
         
@@ -276,7 +277,7 @@ class PixelWizard {
         this.processingText = document.getElementById('processingText');
         this.resultContainer = document.getElementById('resultContainer');
         this.originalImage = document.getElementById('originalImage');
-        this.pixelArtResult = document.getElementById('pixelArtResult');
+        this.pixelArtResultEl = document.getElementById('pixelArtResult');
         this.regenerateBtn = document.getElementById('regenerateBtn');
         this.btnBackStep2 = document.getElementById('backStep2');
         this.btnNextStep2 = document.getElementById('nextStep2');
@@ -656,8 +657,9 @@ class PixelWizard {
         }
         
         // Set pixel art result
-        if (this.pixelArtResult) {
-            this.pixelArtResult.src = pixelArtDataUrl;
+        if (this.pixelArtResultEl) {
+            this.pixelArtResultEl.src = pixelArtDataUrl;
+            this.pixelArtResultEl.style.background = 'transparent';
         }
         
         // Enable next button
@@ -666,7 +668,8 @@ class PixelWizard {
         }
         
         // Store result
-        this.pixelArtResult = pixelArtDataUrl;
+        this.pixelArtResultData = pixelArtDataUrl;
+        this.pixelArtResult = pixelArtDataUrl; // keep string alias for other code paths
     }
     
     // Helper: Update processing text
@@ -772,6 +775,7 @@ class PixelWizard {
             console.log('✅ Pixelation complete, size:', (pixelArtUrl.length / 1024).toFixed(1), 'KB');
             
             // Show result
+            this.pixelArtResultData = pixelArtUrl;
             this.pixelArtResult = pixelArtUrl;
             this.pixelArtImage.src = pixelArtUrl;
             
@@ -944,6 +948,7 @@ class PixelWizard {
             
             if (pixelArtUrl) {
                 console.log('🎨 Pixel Art URL bulundu:', pixelArtUrl);
+                this.pixelArtResultData = pixelArtUrl;
                 this.pixelArtResult = pixelArtUrl;
                 
                 // Show result
@@ -951,6 +956,7 @@ class PixelWizard {
                     this.goToStep(3);
                 }, 500);
             } else if (result.success && result.pixelArtUrl) {
+                this.pixelArtResultData = result.pixelArtUrl;
                 this.pixelArtResult = result.pixelArtUrl;
                 
                 // Show result
@@ -1078,6 +1084,7 @@ MUST BE:
             // Get image URL
             if (result.data && result.data[0] && result.data[0].url) {
                 const pixelArtUrl = result.data[0].url;
+                this.pixelArtResultData = pixelArtUrl;
                 this.pixelArtResult = pixelArtUrl;
                 
                 // Show result
