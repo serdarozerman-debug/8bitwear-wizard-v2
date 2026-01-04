@@ -305,6 +305,14 @@ class PixelWizard {
         this.consentCheckbox = document.getElementById('consentCheckbox');
         this.btnCompleteOrder = document.getElementById('btnCompleteOrder');
         this.btnBackToStep3 = document.getElementById('btnBackToStep3');
+        
+        // Debug: Check critical elements
+        console.log('🔍 Element binding check:');
+        console.log('  Steps:', this.steps);
+        console.log('  uploadZone:', this.uploadZone ? '✅' : '❌');
+        console.log('  previewContainer:', this.previewContainer ? '✅' : '❌');
+        console.log('  previewImage:', this.previewImage ? '✅' : '❌');
+        console.log('  btnToStep2:', this.btnToStep2 ? '✅' : '❌');
     }
     
     bindEvents() {
@@ -366,8 +374,18 @@ class PixelWizard {
     // ==========================================
     
     goToStep(step) {
+        console.log(`🚀 goToStep called: ${this.currentStep} → ${step}`);
+        
+        // Validate step exists
+        if (!this.steps[step]) {
+            console.error(`❌ Step ${step} element not found!`);
+            return;
+        }
+        
         // Hide current step
-        this.steps[this.currentStep].classList.remove('active');
+        if (this.steps[this.currentStep]) {
+            this.steps[this.currentStep].classList.remove('active');
+        }
         
         // Show new step
         this.steps[step].classList.add('active');
