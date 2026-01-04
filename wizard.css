@@ -393,7 +393,7 @@ body {
 .result-container {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--spacing-lg);
     flex-wrap: wrap;
 }
@@ -421,7 +421,9 @@ body {
     display: flex;
     justify-content: flex-end;
     gap: var(--spacing-sm);
-    width: 100%;
+    margin-left: auto;
+    align-self: center;
+    flex-wrap: wrap;
 }
 
 @media (max-width: 900px) {
