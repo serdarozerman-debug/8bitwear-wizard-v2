@@ -244,6 +244,7 @@ class PixelWizard {
         
         // Load initial mockup
         this.updateMockup();
+        this.updateProductThumbs();
         
         // Show demo mode warning
         if (CONFIG.DEMO_MODE) {
@@ -294,6 +295,12 @@ class PixelWizard {
         this.summaryPrice = document.getElementById('summaryPrice');
         this.btnBackToStep2 = document.getElementById('btnBackToStep2');
         this.btnToStep4 = document.getElementById('btnToStep4');
+        // Product card thumbs
+        this.productThumbs = {
+            tshirt: document.getElementById('tshirtMockup'),
+            sweatshirt: document.getElementById('sweatshirtMockup'),
+            hat: document.getElementById('hatMockup')
+        };
         
         // Step 4 elements
         this.checkoutMockup = document.getElementById('checkoutMockup');
@@ -2011,6 +2018,21 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         
         // Update position overlay class
         this.updateMockupPosition();
+        // Update thumbs too (keeps product cards fresh)
+        this.updateProductThumbs();
+    }
+
+    updateProductThumbs() {
+        // Use static mockups where available, fallback to SVG
+        const thumbMap = {
+            tshirt: 'mockups/center-chest.jpg',
+            sweatshirt: this.generateMockupSVG('#4a4a4a', 'Sweatshirt (Ön)', 'front'),
+            hat: this.generateMockupSVG('#1a1a1a', 'Şapka (Ön)', 'front')
+        };
+        Object.entries(this.productThumbs || {}).forEach(([key, el]) => {
+            if (!el) return;
+            el.src = thumbMap[key] || this.generateMockupSVG('#1a1a1a', key, 'front');
+        });
     }
     
     getViewForPosition(position) {
