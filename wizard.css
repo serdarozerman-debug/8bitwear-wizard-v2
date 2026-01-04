@@ -755,6 +755,59 @@ body {
     gap: var(--spacing-sm);
 }
 
+/* Mockup Preview (Step 3 customization) */
+.mockup-preview {
+    width: 100%;
+    max-width: 600px;
+    margin: var(--spacing-lg) auto;
+    text-align: center;
+}
+
+.mockup-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto var(--spacing-md);
+    border-radius: var(--radius-md);
+    overflow: visible;
+}
+
+.mockup-container img#liveMockup {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius-md);
+}
+
+.mockup-preview .mockup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mockup-preview .mockup-overlay img {
+    max-width: 25%;
+    max-height: 25%;
+    object-fit: contain;
+}
+
+.mockup-info {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: var(--spacing-sm);
+}
+
+.mockup-info span {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
 /* Mockup container - gerçek tişört fotoğrafı gibi */
 .mockup-main {
     aspect-ratio: 3/4; /* Tişört fotoğraf oranı */

@@ -358,20 +358,46 @@ class PixelWizard {
                 card.classList.add('active');
                 // Update product selection
                 this.selectedProduct = card.dataset.product;
-                // Show customization panel
-                const customPanel = document.getElementById('customizationPanel');
-                if (customPanel) {
-                    customPanel.style.display = 'block';
-                }
-                // Populate customization options (colors, sizes, positions)
-                this.populateCustomizationOptions();
-                // Update preview and mockup
-                this.updatePreview();
-                // Enable next button
+                // Enable next button (but don't show customization yet)
                 const btnNextStep3 = document.getElementById('nextStep3');
                 if (btnNextStep3) btnNextStep3.disabled = false;
                 console.log('✅ Product selected:', this.selectedProduct);
             });
+        });
+        
+        // Step 3: Next button - show customization panel
+        document.getElementById('nextStep3')?.addEventListener('click', () => {
+            // Check if customization is already visible
+            const customPanel = document.getElementById('customizationPanel');
+            if (customPanel && customPanel.style.display === 'none') {
+                // First click: hide cards, show customization
+                document.querySelector('.product-grid').style.display = 'none';
+                customPanel.style.display = 'block';
+                // Populate options
+                this.populateCustomizationOptions();
+                this.updatePreview();
+                // Change button text and reset disabled
+                document.getElementById('nextStep3').textContent = 'Siparişe Geç';
+                document.getElementById('nextStep3').disabled = false;
+            } else {
+                // Second click: go to step 4
+                this.goToStep(4);
+            }
+        });
+        
+        // Step 3: Back button
+        document.getElementById('backStep3')?.addEventListener('click', () => {
+            const customPanel = document.getElementById('customizationPanel');
+            if (customPanel && customPanel.style.display === 'block') {
+                // If customization is visible, go back to product grid
+                customPanel.style.display = 'none';
+                document.querySelector('.product-grid').style.display = 'grid';
+                document.getElementById('nextStep3').textContent = 'Devam Et';
+                document.getElementById('nextStep3').disabled = false;
+            } else {
+                // Go back to step 2
+                this.goToStep(2);
+            }
         });
         
         // Step 3: Preview
