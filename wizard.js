@@ -267,21 +267,15 @@ class PixelWizard {
         this.changeImageBtn = document.getElementById('changeImageBtn'); // Changed from removeImage
         this.btnToStep2 = document.getElementById('nextStep1'); // Changed from btnToStep2
         
-        // Step 2 elements
+        // Step 2 elements - updated IDs to match HTML
+        this.processingContainer = document.getElementById('processingContainer');
+        this.processingText = document.getElementById('processingText');
+        this.resultContainer = document.getElementById('resultContainer');
         this.originalImage = document.getElementById('originalImage');
-        this.pixelArtPanel = document.getElementById('pixelArtPanel');
-        this.pixelArtImage = document.getElementById('pixelArtImage');
-        this.loadingState = document.getElementById('loadingState');
-        this.loadingBar = document.getElementById('loadingBar');
-        this.loadingText = document.querySelector('.loading-text');
-        this.attemptCount = document.getElementById('attemptCount');
-        this.attemptInfo = document.getElementById('attemptInfo');
-        this.convertActions = document.getElementById('convertActions');
-        this.noAttempts = document.getElementById('noAttempts');
-        this.btnRetry = document.getElementById('btnRetry');
-        this.btnToStep3 = document.getElementById('btnToStep3');
-        this.btnUploadOwn = document.getElementById('btnUploadOwn');
-        this.btnCancel = document.getElementById('btnCancel');
+        this.pixelArtResult = document.getElementById('pixelArtResult');
+        this.regenerateBtn = document.getElementById('regenerateBtn');
+        this.btnBackStep2 = document.getElementById('backStep2');
+        this.btnNextStep2 = document.getElementById('nextStep2');
         
         // Step 3 elements
         this.mockupImage = document.getElementById('liveMockup'); // Changed from mockupImage to liveMockup
@@ -338,10 +332,9 @@ class PixelWizard {
         this.btnToStep2?.addEventListener('click', () => this.goToStep(2));
         
         // Step 2: Convert
-        this.btnRetry?.addEventListener('click', () => this.retryConversion());
-        this.btnToStep3?.addEventListener('click', () => this.goToStep(3));
-        this.btnUploadOwn?.addEventListener('click', () => this.handleUploadOwn());
-        this.btnCancel?.addEventListener('click', () => this.goToStep(1));
+        this.regenerateBtn?.addEventListener('click', () => this.retryConversion());
+        this.btnBackStep2?.addEventListener('click', () => this.goToStep(1));
+        this.btnNextStep2?.addEventListener('click', () => this.goToStep(3));
         
         // Step 3: Preview
         this.viewBtns?.forEach(btn => {
@@ -596,15 +589,25 @@ class PixelWizard {
     async startConversion() {
         if (this.isProcessing) return;
         
-        // Set original image
-        this.originalImage.src = this.uploadedImage;
+        console.log('🎨 Starting pixel art conversion...');
         
-        // Reset UI
-        this.loadingState.style.display = 'flex';
-        this.pixelArtImage.style.display = 'none';
-        this.convertActions.style.display = 'none';
-        this.noAttempts.style.display = 'none';
-        this.attemptInfo.style.display = 'block';
+        // Set original image
+        if (this.originalImage) {
+            this.originalImage.src = this.uploadedImage;
+        }
+        
+        // Show processing, hide result
+        if (this.processingContainer) {
+            this.processingContainer.style.display = 'block';
+        }
+        if (this.resultContainer) {
+            this.resultContainer.style.display = 'none';
+        }
+        
+        // Disable next button
+        if (this.btnNextStep2) {
+            this.btnNextStep2.disabled = true;
+        }
         
         // Start conversion based on mode
         if (CONFIG.DEMO_MODE) {
@@ -631,6 +634,44 @@ class PixelWizard {
             await this.callOpenAI();
         } else {
             await this.leonardoPixelArt(); // default to Leonardo FLUX.1 Kontext
+        }
+    }
+    
+    // Helper: Show conversion result
+    showConversionResult(pixelArtDataUrl) {
+        console.log('✅ Showing conversion result');
+        
+        // Hide processing
+        if (this.processingContainer) {
+            this.processingContainer.style.display = 'none';
+        }
+        
+        // Show result
+        if (this.resultContainer) {
+            this.resultContainer.style.display = 'block';
+        }
+        
+        // Set pixel art result
+        if (this.pixelArtResult) {
+            this.pixelArtResult.src = pixelArtDataUrl;
+        }
+        
+        // Enable next button
+        if (this.btnNextStep2) {
+            this.btnNextStep2.disabled = false;
+        }
+        
+        // Store result
+        this.pixelArtResult = pixelArtDataUrl;
+    }
+    
+    // Helper: Update processing text
+    updateProcessingText(text) {
+        if (this.processingText) {
+            const statusEl = this.processingText.querySelector('.processing-status');
+            if (statusEl) {
+                statusEl.textContent = text;
+            }
         }
     }
     
@@ -822,12 +863,13 @@ class PixelWizard {
             ctx.drawImage(img, 0, 0, pixelSize, pixelSize);
             
             // Get the pixelated data URL
-            this.pixelArtResult = canvas.toDataURL('image/png');
-            this.pixelArtImage.src = this.pixelArtResult;
+            const pixelArtDataUrl = canvas.toDataURL('image/png');
             
-            // Apply pixelated rendering
-            this.pixelArtImage.style.imageRendering = 'pixelated';
-            this.pixelArtImage.style.width = '100%';
+            // Show result
+            this.showConversionResult(pixelArtDataUrl);
+            
+            console.log('✅ Client-side pixelation completed');
+            this.isProcessing = false;
         };
         img.src = this.uploadedImage;
     }
