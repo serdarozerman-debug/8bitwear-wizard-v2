@@ -820,11 +820,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    transform: scale(5);
+    transform-origin: center center;
 }
 
 .mockup-preview .mockup-overlay img {
-    max-width: 600%;
-    max-height: 600%;
+    width: 200px;
+    height: auto;
     object-fit: contain;
 }
 
