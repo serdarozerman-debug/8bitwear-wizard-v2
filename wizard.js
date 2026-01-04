@@ -156,10 +156,10 @@ class PixelWizard {
         // Step 1 elements
         this.uploadZone = document.getElementById('uploadZone');
         this.fileInput = document.getElementById('fileInput');
-        this.uploadPreview = document.getElementById('uploadPreview');
-        this.previewImage = document.getElementById('previewImage');
-        this.removeImageBtn = document.getElementById('removeImage');
-        this.btnToStep2 = document.getElementById('btnToStep2');
+        this.previewContainer = document.getElementById('previewContainer');
+        this.previewImage = document.getElementById('imagePreview'); // HTML'de imagePreview
+        this.changeImageBtn = document.getElementById('changeImageBtn');
+        this.btnToStep2 = document.getElementById('nextStep1'); // HTML'de nextStep1
         
         // Step 2 elements
         this.originalImage = document.getElementById('originalImage');
@@ -223,7 +223,7 @@ class PixelWizard {
         this.uploadZone?.addEventListener('dragleave', (e) => this.handleDragLeave(e));
         this.uploadZone?.addEventListener('drop', (e) => this.handleDrop(e));
         
-        this.removeImageBtn?.addEventListener('click', (e) => {
+        this.changeImageBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
             this.removeImage();
         });
@@ -426,12 +426,16 @@ class PixelWizard {
                 console.log('  - previewImage element:', this.previewImage ? 'found' : 'NULL');
                 console.log('  - uploadZone element:', this.uploadZone ? 'found' : 'NULL');
                 console.log('  - btnToStep2 element:', this.btnToStep2 ? 'found' : 'NULL');
+                console.log('  - previewContainer element:', this.previewContainer ? 'found' : 'NULL');
                 
                 if (this.previewImage) {
                     this.previewImage.src = this.uploadedImage;
                 }
+                if (this.previewContainer) {
+                    this.previewContainer.style.display = 'block';
+                }
                 if (this.uploadZone) {
-                    this.uploadZone.classList.add('has-image');
+                    this.uploadZone.style.display = 'none';
                 }
                 if (this.btnToStep2) {
                     this.btnToStep2.disabled = false;
@@ -456,10 +460,21 @@ class PixelWizard {
         this.uploadedImage = null;
         this.uploadedImageBase64 = null;
         this.uploadedImageMimeType = null;
-        this.previewImage.src = '';
-        this.uploadZone.classList.remove('has-image');
-        this.btnToStep2.disabled = true;
-        this.fileInput.value = '';
+        if (this.previewImage) {
+            this.previewImage.src = '';
+        }
+        if (this.previewContainer) {
+            this.previewContainer.style.display = 'none';
+        }
+        if (this.uploadZone) {
+            this.uploadZone.style.display = 'block';
+        }
+        if (this.btnToStep2) {
+            this.btnToStep2.disabled = true;
+        }
+        if (this.fileInput) {
+            this.fileInput.value = '';
+        }
     }
     
     // ==========================================
