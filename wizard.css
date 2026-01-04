@@ -394,14 +394,20 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: var(--spacing-lg);
     flex-wrap: wrap;
+    width: 75%;
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: center;
 }
 
 .result-comparison {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: var(--spacing-md);
 }
 
@@ -419,17 +425,19 @@ body {
 
 .step[data-step="2"] .step-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: var(--spacing-sm);
-    margin-left: auto;
     align-self: center;
     flex-wrap: wrap;
+    width: auto;
 }
 
 @media (max-width: 900px) {
     .result-container {
         flex-direction: column;
         align-items: flex-start;
+        width: 100%;
+        max-width: none;
     }
     .result-comparison {
         width: 100%;
