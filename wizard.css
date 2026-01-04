@@ -429,7 +429,7 @@ body {
     flex-direction: column;
     gap: var(--spacing-md);
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .step[data-step="2"] .step-actions {
@@ -439,6 +439,9 @@ body {
     align-self: center;
     flex-wrap: wrap;
     width: 100%;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
 }
 
 @media (max-width: 900px) {
