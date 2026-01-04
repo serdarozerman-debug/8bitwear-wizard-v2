@@ -175,7 +175,8 @@ class PixelWizard {
         // State
         this.currentStep = 1;
         this.totalSteps = 4;
-        this.uploadedImage = null;
+        this.uploadedImage = null; // Resized preview version
+        this.uploadedImageOriginal = null; // Original high-quality version for backend
         this.uploadedImageBase64 = null;
         this.uploadedImageMimeType = null;
         this.pixelArtResult = null;
@@ -474,14 +475,17 @@ class PixelWizard {
         // Read, resize if needed, and display
         const reader = new FileReader();
         reader.onload = (e) => {
-            // Create image to resize if needed
+            // Save original high-quality image for backend
+            this.uploadedImageOriginal = e.target.result;
+            
+            // Create image to resize if needed (for preview only)
             const img = new Image();
             img.onload = () => {
                 const maxSize = 1024;
                 let width = img.width;
                 let height = img.height;
                 
-                // Resize if too large
+                // Resize if too large (for preview display only)
                 if (width > maxSize || height > maxSize) {
                     if (width > height) {
                         height = Math.round((height / width) * maxSize);
@@ -498,20 +502,37 @@ class PixelWizard {
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // Save resized version
+                    // Save resized version for preview
                     this.uploadedImage = canvas.toDataURL('image/jpeg', 0.9);
-                    console.log(`📐 Image resized to ${width}x${height}`);
+                    console.log(`📐 Image resized to ${width}x${height} for preview`);
                 } else {
-                    // Use original
-            this.uploadedImage = e.target.result;
+                    // Use original for preview too if small enough
+                    this.uploadedImage = e.target.result;
                 }
                 
-            // Extract base64 without data URL prefix
-                this.uploadedImageBase64 = (this.uploadedImage.split(',')[1] || '').trim();
+                // Extract base64 from ORIGINAL high-quality image for backend
+                this.uploadedImageBase64 = (this.uploadedImageOriginal.split(',')[1] || '').trim();
                 this.uploadedImageMimeType = file.type;
-            this.previewImage.src = this.uploadedImage;
-            this.uploadZone.classList.add('has-image');
-            this.btnToStep2.disabled = false;
+                
+                // Update UI elements with correct IDs
+                if (this.previewImage) {
+                    this.previewImage.src = this.uploadedImage;
+                }
+                
+                // Hide upload zone and show preview container
+                if (this.uploadZone) {
+                    this.uploadZone.style.display = 'none';
+                }
+                if (this.previewContainer) {
+                    this.previewContainer.style.display = 'flex';
+                }
+                
+                // Enable "Devam Et" button
+                if (this.btnToStep2) {
+                    this.btnToStep2.disabled = false;
+                }
+                
+                console.log('✅ Image loaded successfully');
             };
             img.src = e.target.result;
         };
@@ -520,12 +541,34 @@ class PixelWizard {
     
     removeImage() {
         this.uploadedImage = null;
+        this.uploadedImageOriginal = null; // Also clear original high-quality image
         this.uploadedImageBase64 = null;
         this.uploadedImageMimeType = null;
-        this.previewImage.src = '';
-        this.uploadZone.classList.remove('has-image');
-        this.btnToStep2.disabled = true;
-        this.fileInput.value = '';
+        
+        // Update UI elements with correct IDs
+        if (this.previewImage) {
+            this.previewImage.src = '';
+        }
+        
+        // Show upload zone and hide preview container
+        if (this.uploadZone) {
+            this.uploadZone.style.display = 'flex';
+        }
+        if (this.previewContainer) {
+            this.previewContainer.style.display = 'none';
+        }
+        
+        // Disable "Devam Et" button
+        if (this.btnToStep2) {
+            this.btnToStep2.disabled = true;
+        }
+        
+        // Clear file input
+        if (this.fileInput) {
+            this.fileInput.value = '';
+        }
+        
+        console.log('🗑️ Image removed');
     }
     
     // ==========================================
