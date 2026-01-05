@@ -466,7 +466,7 @@ class PixelWizard {
         
         // Hide current step
         if (this.steps[this.currentStep]) {
-            this.steps[this.currentStep].classList.remove('active');
+        this.steps[this.currentStep].classList.remove('active');
         }
         
         // Show new step
@@ -607,7 +607,7 @@ class PixelWizard {
                     console.log(`📐 Image resized to ${width}x${height} for preview`);
                 } else {
                     // Use original for preview too if small enough
-                    this.uploadedImage = e.target.result;
+            this.uploadedImage = e.target.result;
                 }
                 
                 // Extract base64 from ORIGINAL high-quality image for backend
@@ -616,7 +616,7 @@ class PixelWizard {
                 
                 // Update UI elements with correct IDs
                 if (this.previewImage) {
-                    this.previewImage.src = this.uploadedImage;
+            this.previewImage.src = this.uploadedImage;
                 }
                 
                 // Hide upload zone and show preview container
@@ -629,7 +629,7 @@ class PixelWizard {
                 
                 // Enable "Devam Et" button
                 if (this.btnToStep2) {
-                    this.btnToStep2.disabled = false;
+            this.btnToStep2.disabled = false;
                 }
                 
                 console.log('✅ Image loaded successfully');
@@ -647,7 +647,7 @@ class PixelWizard {
         
         // Update UI elements with correct IDs
         if (this.previewImage) {
-            this.previewImage.src = '';
+        this.previewImage.src = '';
         }
         
         // Show upload zone and hide preview container
@@ -660,12 +660,12 @@ class PixelWizard {
         
         // Disable "Devam Et" button
         if (this.btnToStep2) {
-            this.btnToStep2.disabled = true;
+        this.btnToStep2.disabled = true;
         }
         
         // Clear file input
         if (this.fileInput) {
-            this.fileInput.value = '';
+        this.fileInput.value = '';
         }
         
         console.log('🗑️ Image removed');
@@ -682,7 +682,7 @@ class PixelWizard {
         
         // Set original image
         if (this.originalImage) {
-            this.originalImage.src = this.uploadedImage;
+        this.originalImage.src = this.uploadedImage;
         }
         
         // Show processing, hide result
@@ -2071,17 +2071,20 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     }
     
     updateMockupPosition() {
-        // SIMPLIFIED: For Step 3 preview, just show logo centered and large
         const overlay = document.getElementById('mockupOverlay');
         const overlayImg = document.getElementById('mockupPixelArt');
         if (!overlay || !overlayImg) return;
         
+        // Remove all position classes
+        overlay.className = 'mockup-overlay';
+        
+        // Add current position class
+        overlay.classList.add(`position-${this.selectedPosition}`);
+        
         // Show overlay
         overlay.style.display = 'flex';
         
-        // For Step 3 preview, position is ignored - just show large centered logo
-        // User can see different positions but we show them all centered for preview
-        console.log('✅ Mockup position updated (centered for preview)');
+        console.log('✅ Mockup position updated:', this.selectedPosition);
     }
     
     handleViewChange(btn) {
