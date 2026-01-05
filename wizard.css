@@ -917,8 +917,8 @@ body {
 
 /* Göğüs Ortası - 10-12 inch genişlik, göğüs hizasında */
 .mockup-overlay.position-center-chest {
-    top: 37%;
-    left: 45%;
+    top: 27%;
+    left: 40%;
     transform: translate(-50%, -50%);
     width: 20%; /* Daha büyük - ana tasarım */
     max-width: 200px;
@@ -927,7 +927,7 @@ body {
 /* Sol Göğüs Üstü - 3.5-4 inch logo, sol omuz altı */
 .mockup-overlay.position-left-chest {
     top: 28%;
-    left: 63%; /* Sağ taraf (tişörtün sol göğsü) */
+    left: 58%; /* Sağ taraf (tişörtün sol göğsü) */
     transform: translate(-50%, -50%);
     width: 10%; /* Küçük logo boyutu */
     max-width: 80px;
@@ -935,7 +935,7 @@ body {
 
 /* Sol Kol - Kol üzerinde orta boy */
 .mockup-overlay.position-left-arm {
-    top: 30%;
+    top: 15%;
     left: 20%;
     transform: translate(-50%, -50%);
     width: 15%;
@@ -944,8 +944,8 @@ body {
 
 /* Sağ Kol - Kol üzerinde orta boy */
 .mockup-overlay.position-right-arm {
-    top: 30%;
-    left: 70%;
+    top: 15%;
+    left: 60%;
     transform: translate(-50%, -50%);
     width: 15%;
     max-width: 120px;
