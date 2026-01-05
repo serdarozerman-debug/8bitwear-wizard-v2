@@ -917,8 +917,8 @@ body {
 
 /* Göğüs Ortası - 10-12 inch genişlik, göğüs hizasında */
 .mockup-overlay.position-center-chest {
-    top: 27%;
-    left: 40%;
+    top: 90%;
+    left: 50%;
     transform: translate(-50%, -50%);
     width: 20%; /* Daha büyük - ana tasarım */
     max-width: 200px;
