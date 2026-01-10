@@ -2298,10 +2298,10 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         // Use real photos for t-shirt (all colors - they are white shirts, logo color varies)
         if (product === 'tshirt') {
             const mockupMap = {
-                'center-chest': 'mockups/center-chest.jpg',      // Resim 3: Full front view
-                'left-chest': 'mockups/left-chest.jpg',          // Resim 2: Upper close-up
-                'right-arm': 'mockups/right-bicep.jpg',          // Resim 5: Left side (left sleeve visible)
-                'left-arm': 'mockups/left-bicep.jpg'             // Resim 4: Right side (right sleeve visible)
+                'center-chest': 'mockups/center-chest.jpg',      // Full front view
+                'left-chest': 'mockups/left-chest.jpg',          // Upper close-up
+                'right-arm': 'mockups/right-arm.jpg',            // Right sleeve visible
+                'left-arm': 'mockups/left-arm.jpg'               // Left sleeve visible
             };
             
             if (mockupMap[position]) {
@@ -2898,7 +2898,8 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     // ==========================================
     
     updateCheckout() {
-        const productName = this.selectedProduct === 'tshirt' ? 'Pixel Art Tişört' : 'Pixel Art Sweatshirt';
+        const productName = this.selectedProduct === 'tshirt' ? 'Pixel Art Tişört' : 
+                           this.selectedProduct === 'sweatshirt' ? 'Pixel Art Sweatshirt' : 'Pixel Art Şapka';
         const colorName = this.colorNames[this.selectedColor];
         const price = this.prices[this.selectedProduct];
         
@@ -2909,6 +2910,27 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         
         // Set mockup image
         this.checkoutMockup.src = this.getMockupUrl();
+        
+        // Update order summary details
+        const orderProduct = document.getElementById('orderProduct');
+        const orderColor = document.getElementById('orderColor');
+        const orderSize = document.getElementById('orderSize');
+        const orderPosition = document.getElementById('orderPosition');
+        const orderBasePrice = document.getElementById('orderBasePrice');
+        
+        if (orderProduct) orderProduct.textContent = productName;
+        if (orderColor) orderColor.textContent = colorName;
+        if (orderSize) orderSize.textContent = this.selectedSize;
+        if (orderPosition) {
+            const positionNames = {
+                'center-chest': 'Orta Göğüs',
+                'left-chest': 'Sol Göğüs',
+                'right-arm': 'Sağ Pazu',
+                'left-arm': 'Sol Pazu'
+            };
+            orderPosition.textContent = positionNames[this.selectedPosition] || this.selectedPosition;
+        }
+        if (orderBasePrice) orderBasePrice.textContent = `${price.toLocaleString('tr-TR')}₺`;
         
         // Reset consent
         this.consentCheckbox.checked = false;

@@ -1828,3 +1828,10 @@ body {
 .mockup-overlay.dragging {
     pointer-events: auto !important;
 }
+
+/* Prevent mockup image from being dragged */
+.mockup-container img#liveMockup {
+    pointer-events: none !important;
+    user-select: none;
+    -webkit-user-drag: none;
+}
