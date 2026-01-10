@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "8bitwear-wizard-v2",
+  "buildCommand": "bash build.sh",
   "builds": [
     {
       "src": "*.html",

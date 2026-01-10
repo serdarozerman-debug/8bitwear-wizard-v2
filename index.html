@@ -209,14 +209,16 @@
 
                         <div class="mockup-preview" id="mockupPreview">
                             <h4>Önizleme</h4>
+                            <p class="drag-hint">💡 <strong>İpucu:</strong> Logoyu sürükleyerek konumunu ayarlayabilirsiniz</p>
                             <div class="mockup-container">
                                 <img id="liveMockup" alt="Live Mockup" style="width: 100%; max-width: 400px; border-radius: 8px;">
-                                <div class="mockup-overlay" id="mockupOverlay">
-                                    <img id="mockupPixelArt" alt="Pixel Art Overlay" style="width: 100%; height: 100%; object-fit: contain;">
+                                <div class="mockup-overlay draggable" id="mockupOverlay">
+                                    <img id="mockupPixelArt" alt="Pixel Art Overlay" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;">
                                 </div>
                             </div>
                             <div class="mockup-info">
                                 <p>Seçilen Renk: <span id="selectedColor">Siyah</span></p>
+                                <p>Logo Pozisyonu: <span id="logoPosition">Manuel</span></p>
                             </div>
                         </div>
                     </div>

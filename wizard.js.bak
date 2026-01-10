@@ -179,28 +179,15 @@ class PixelWizard {
         this.uploadedImageOriginal = null; // Original high-quality version for backend
         this.uploadedImageBase64 = null;
         this.uploadedImageMimeType = null;
-        this.pixelArtResultData = null; // base64 data string
-        this.pixelArtResult = null;     // alias string for backward compatibility
+        this.pixelArtResult = null;
         this.attemptsLeft = 3;
         this.isProcessing = false;
-        
-        // Progress bar placeholders (not used in Shopify iframe)
-        this.loadingBar = { style: { width: '' } };
-        this.updateLoadingText = () => {};
         
         // Product state
         this.selectedProduct = 'tshirt';
         this.selectedColor = 'black';
         this.selectedSize = 'L';
         this.selectedPosition = 'center-chest'; // Default position
-        
-        // Drag & Drop state
-        this.isDragging = false;
-        this.dragStartX = 0;
-        this.dragStartY = 0;
-        this.overlayStartX = 0;
-        this.overlayStartY = 0;
-        this.manualPosition = null; // {top: %, left: %} when user drags
         
         // Prices
         this.prices = {
@@ -252,10 +239,6 @@ class PixelWizard {
         
         // Load initial mockup
         this.updateMockup();
-        this.updateProductThumbs();
-        
-        // Initialize drag & drop
-        this.initDragAndDrop();
         
         // Show demo mode warning
         if (CONFIG.DEMO_MODE) {
@@ -278,25 +261,18 @@ class PixelWizard {
         
         // Step 1 elements
         this.uploadZone = document.getElementById('uploadZone');
-        this.uploadBtn = document.getElementById('uploadBtn');
         this.fileInput = document.getElementById('fileInput');
         this.previewContainer = document.getElementById('previewContainer'); // Preview container
         this.previewImage = document.getElementById('imagePreview'); // Changed from previewImage
         this.changeImageBtn = document.getElementById('changeImageBtn'); // Changed from removeImage
         this.btnToStep2 = document.getElementById('nextStep1'); // Changed from btnToStep2
         
-        // Debug file input
-        console.log('📁 File input check:');
-        console.log('  fileInput:', this.fileInput ? '✅' : '❌');
-        console.log('  uploadBtn:', this.uploadBtn ? '✅' : '❌');
-        console.log('  uploadZone:', this.uploadZone ? '✅' : '❌');
-        
         // Step 2 elements - updated IDs to match HTML
         this.processingContainer = document.getElementById('processingContainer');
         this.processingText = document.getElementById('processingText');
         this.resultContainer = document.getElementById('resultContainer');
         this.originalImage = document.getElementById('originalImage');
-        this.pixelArtResultEl = document.getElementById('pixelArtResult');
+        this.pixelArtResult = document.getElementById('pixelArtResult');
         this.regenerateBtn = document.getElementById('regenerateBtn');
         this.btnBackStep2 = document.getElementById('backStep2');
         this.btnNextStep2 = document.getElementById('nextStep2');
@@ -313,12 +289,6 @@ class PixelWizard {
         this.summaryPrice = document.getElementById('summaryPrice');
         this.btnBackToStep2 = document.getElementById('btnBackToStep2');
         this.btnToStep4 = document.getElementById('btnToStep4');
-        // Product card thumbs
-        this.productThumbs = {
-            tshirt: document.getElementById('tshirtMockup'),
-            sweatshirt: document.getElementById('sweatshirtMockup'),
-            hat: document.getElementById('hatMockup')
-        };
         
         // Step 4 elements
         this.checkoutMockup = document.getElementById('checkoutMockup');
@@ -340,32 +310,14 @@ class PixelWizard {
     }
     
     bindEvents() {
-        // Step 1: Upload - Multiple triggers for file selection
-        
-        // Upload button (primary)
-        this.uploadBtn?.addEventListener('click', (e) => {
-            console.log('🖱️ Upload button clicked');
-            e.preventDefault();
-            e.stopPropagation();
-            if (this.fileInput) {
-                this.fileInput.click();
-            } else {
-                console.error('❌ fileInput not found!');
-            }
-        });
-        
-        // Upload zone (secondary)
+        // Step 1: Upload
         this.uploadZone?.addEventListener('click', (e) => {
-            console.log('🖱️ Upload zone clicked');
-            if (!e.target.closest('button')) {
+            if (!e.target.closest('.remove-image')) {
                 this.fileInput?.click();
             }
         });
         
-        this.fileInput?.addEventListener('change', (e) => {
-            console.log('📂 File selected:', e.target.files[0]?.name);
-            this.handleFileSelect(e);
-        });
+        this.fileInput?.addEventListener('change', (e) => this.handleFileSelect(e));
         
         // Drag and drop
         this.uploadZone?.addEventListener('dragover', (e) => this.handleDragOver(e));
@@ -383,58 +335,6 @@ class PixelWizard {
         this.regenerateBtn?.addEventListener('click', () => this.retryConversion());
         this.btnBackStep2?.addEventListener('click', () => this.goToStep(1));
         this.btnNextStep2?.addEventListener('click', () => this.goToStep(3));
-        
-        // Step 3: Product Selection (cards)
-        const productCards = document.querySelectorAll('.product-card');
-        productCards?.forEach(card => {
-            card.addEventListener('click', () => {
-                // Remove active from all cards
-                productCards.forEach(c => c.classList.remove('active'));
-                // Mark clicked card as active
-                card.classList.add('active');
-                // Update product selection
-                this.selectedProduct = card.dataset.product;
-                // Enable next button (but don't show customization yet)
-                const btnNextStep3 = document.getElementById('nextStep3');
-                if (btnNextStep3) btnNextStep3.disabled = false;
-                console.log('✅ Product selected:', this.selectedProduct);
-            });
-        });
-        
-        // Step 3: Next button - show customization panel
-        document.getElementById('nextStep3')?.addEventListener('click', () => {
-            // Check if customization is already visible
-            const customPanel = document.getElementById('customizationPanel');
-            if (customPanel && customPanel.style.display === 'none') {
-                // First click: hide cards, show customization
-                document.querySelector('.product-grid').style.display = 'none';
-                customPanel.style.display = 'block';
-                // Populate options
-                this.populateCustomizationOptions();
-                this.updatePreview();
-                // Change button text and reset disabled
-                document.getElementById('nextStep3').textContent = 'Siparişe Geç';
-                document.getElementById('nextStep3').disabled = false;
-            } else {
-                // Second click: go to step 4
-                this.goToStep(4);
-            }
-        });
-        
-        // Step 3: Back button
-        document.getElementById('backStep3')?.addEventListener('click', () => {
-            const customPanel = document.getElementById('customizationPanel');
-            if (customPanel && customPanel.style.display === 'block') {
-                // If customization is visible, go back to product grid
-                customPanel.style.display = 'none';
-                document.querySelector('.product-grid').style.display = 'grid';
-                document.getElementById('nextStep3').textContent = 'Devam Et';
-                document.getElementById('nextStep3').disabled = false;
-            } else {
-                // Go back to step 2
-                this.goToStep(2);
-            }
-        });
         
         // Step 3: Preview
         this.viewBtns?.forEach(btn => {
@@ -477,7 +377,7 @@ class PixelWizard {
         
         // Hide current step
         if (this.steps[this.currentStep]) {
-        this.steps[this.currentStep].classList.remove('active');
+            this.steps[this.currentStep].classList.remove('active');
         }
         
         // Show new step
@@ -618,7 +518,7 @@ class PixelWizard {
                     console.log(`📐 Image resized to ${width}x${height} for preview`);
                 } else {
                     // Use original for preview too if small enough
-            this.uploadedImage = e.target.result;
+                    this.uploadedImage = e.target.result;
                 }
                 
                 // Extract base64 from ORIGINAL high-quality image for backend
@@ -627,7 +527,7 @@ class PixelWizard {
                 
                 // Update UI elements with correct IDs
                 if (this.previewImage) {
-            this.previewImage.src = this.uploadedImage;
+                    this.previewImage.src = this.uploadedImage;
                 }
                 
                 // Hide upload zone and show preview container
@@ -640,7 +540,7 @@ class PixelWizard {
                 
                 // Enable "Devam Et" button
                 if (this.btnToStep2) {
-            this.btnToStep2.disabled = false;
+                    this.btnToStep2.disabled = false;
                 }
                 
                 console.log('✅ Image loaded successfully');
@@ -658,7 +558,7 @@ class PixelWizard {
         
         // Update UI elements with correct IDs
         if (this.previewImage) {
-        this.previewImage.src = '';
+            this.previewImage.src = '';
         }
         
         // Show upload zone and hide preview container
@@ -671,12 +571,12 @@ class PixelWizard {
         
         // Disable "Devam Et" button
         if (this.btnToStep2) {
-        this.btnToStep2.disabled = true;
+            this.btnToStep2.disabled = true;
         }
         
         // Clear file input
         if (this.fileInput) {
-        this.fileInput.value = '';
+            this.fileInput.value = '';
         }
         
         console.log('🗑️ Image removed');
@@ -693,7 +593,7 @@ class PixelWizard {
         
         // Set original image
         if (this.originalImage) {
-        this.originalImage.src = this.uploadedImage;
+            this.originalImage.src = this.uploadedImage;
         }
         
         // Show processing, hide result
@@ -752,9 +652,8 @@ class PixelWizard {
         }
         
         // Set pixel art result
-        if (this.pixelArtResultEl) {
-            this.pixelArtResultEl.src = pixelArtDataUrl;
-            this.pixelArtResultEl.style.background = 'transparent';
+        if (this.pixelArtResult) {
+            this.pixelArtResult.src = pixelArtDataUrl;
         }
         
         // Enable next button
@@ -763,8 +662,7 @@ class PixelWizard {
         }
         
         // Store result
-        this.pixelArtResultData = pixelArtDataUrl;
-        this.pixelArtResult = pixelArtDataUrl; // keep string alias for other code paths
+        this.pixelArtResult = pixelArtDataUrl;
     }
     
     // Helper: Update processing text
@@ -870,7 +768,6 @@ class PixelWizard {
             console.log('✅ Pixelation complete, size:', (pixelArtUrl.length / 1024).toFixed(1), 'KB');
             
             // Show result
-            this.pixelArtResultData = pixelArtUrl;
             this.pixelArtResult = pixelArtUrl;
             this.pixelArtImage.src = pixelArtUrl;
             
@@ -1043,7 +940,6 @@ class PixelWizard {
             
             if (pixelArtUrl) {
                 console.log('🎨 Pixel Art URL bulundu:', pixelArtUrl);
-                this.pixelArtResultData = pixelArtUrl;
                 this.pixelArtResult = pixelArtUrl;
                 
                 // Show result
@@ -1051,7 +947,6 @@ class PixelWizard {
                     this.goToStep(3);
                 }, 500);
             } else if (result.success && result.pixelArtUrl) {
-                this.pixelArtResultData = result.pixelArtUrl;
                 this.pixelArtResult = result.pixelArtUrl;
                 
                 // Show result
@@ -1179,7 +1074,6 @@ MUST BE:
             // Get image URL
             if (result.data && result.data[0] && result.data[0].url) {
                 const pixelArtUrl = result.data[0].url;
-                this.pixelArtResultData = pixelArtUrl;
                 this.pixelArtResult = pixelArtUrl;
                 
                 // Show result
@@ -1975,67 +1869,6 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         this.updateSummary();
     }
     
-    
-    populateCustomizationOptions() {
-        // Populate colors
-        const colorOptions = document.getElementById('colorOptions');
-        if (colorOptions) {
-            colorOptions.innerHTML = '';
-            const colors = [
-                { id: 'black', name: 'Siyah', hex: '#1a1a1a' },
-                { id: 'white', name: 'Beyaz', hex: '#ffffff' },
-                { id: 'navy', name: 'Lacivert', hex: '#1e3a5f' },
-                { id: 'gray', name: 'Gri', hex: '#808080' }
-            ];
-            colors.forEach((color, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'color-btn' + (i === 0 ? ' active' : '');
-                btn.dataset.color = color.id;
-                btn.style.background = color.hex;
-                btn.style.border = color.id === 'white' ? '1px solid #ccc' : 'none';
-                btn.addEventListener('click', () => this.handleColorChange(btn));
-                colorOptions.appendChild(btn);
-            });
-        }
-        
-        // Populate sizes
-        const sizeOptions = document.getElementById('sizeOptions');
-        if (sizeOptions) {
-            sizeOptions.innerHTML = '';
-            const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
-            sizes.forEach((size, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'size-btn' + (i === 2 ? ' active' : ''); // Default: L
-                btn.dataset.size = size;
-                btn.textContent = size;
-                btn.addEventListener('click', () => this.handleSizeChange(btn));
-                sizeOptions.appendChild(btn);
-            });
-        }
-        
-        // Populate positions
-        const positionOptions = document.getElementById('positionOptions');
-        if (positionOptions) {
-            positionOptions.innerHTML = '';
-            const positions = this.productPositions[this.selectedProduct];
-            positions.forEach((pos, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'position-btn' + (i === 0 ? ' active' : '');
-                btn.dataset.position = pos.id;
-                btn.innerHTML = `
-                    <span class="position-icon">${pos.icon}</span>
-                    <span>${pos.name}</span>
-                `;
-                btn.addEventListener('click', () => this.handlePositionChange(btn));
-                positionOptions.appendChild(btn);
-            });
-            // Set default position
-            if (positions.length > 0) {
-                this.selectedPosition = positions[0].id;
-            }
-        }
-    }
-    
     populatePositionSelector() {
         const positionSelector = document.getElementById('positionSelector');
         if (!positionSelector) return;
@@ -2071,9 +1904,6 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         
         this.selectedPosition = btn.dataset.position;
         
-        // Clear manual position when user selects a preset
-        this.manualPosition = null;
-        
         // Update mockup view (front/side) based on position
         this.updateMockup();
         
@@ -2084,136 +1914,42 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         this.updateSummary();
     }
     
-    // ==========================================
-    // DRAG & DROP FUNCTIONALITY
-    // ==========================================
-    
-    initDragAndDrop() {
-        const overlay = document.getElementById('mockupOverlay');
-        if (!overlay) return;
-        
-        overlay.addEventListener('mousedown', (e) => this.handleDragStart(e));
-        document.addEventListener('mousemove', (e) => this.handleDragMove(e));
-        document.addEventListener('mouseup', () => this.handleDragEnd());
-        
-        // Touch events for mobile
-        overlay.addEventListener('touchstart', (e) => this.handleDragStart(e.touches[0]));
-        document.addEventListener('touchmove', (e) => {
-            if (this.isDragging) {
-                e.preventDefault();
-                this.handleDragMove(e.touches[0]);
-            }
-        }, { passive: false });
-        document.addEventListener('touchend', () => this.handleDragEnd());
-    }
-    
-    handleDragStart(e) {
-        this.isDragging = true;
-        
-        const overlay = document.getElementById('mockupOverlay');
-        overlay.classList.add('dragging');
-        
-        // Store start positions
-        this.dragStartX = e.clientX;
-        this.dragStartY = e.clientY;
-        
-        // Get current overlay position
-        const rect = overlay.getBoundingClientRect();
-        const container = overlay.parentElement.getBoundingClientRect();
-        
-        this.overlayStartX = ((rect.left - container.left) / container.width) * 100;
-        this.overlayStartY = ((rect.top - container.top) / container.height) * 100;
-        
-        console.log('🎯 Drag started:', { x: this.overlayStartX, y: this.overlayStartY });
-    }
-    
-    handleDragMove(e) {
-        if (!this.isDragging) return;
-        
-        const overlay = document.getElementById('mockupOverlay');
-        const container = overlay.parentElement;
-        
-        // Calculate movement delta
-        const deltaX = e.clientX - this.dragStartX;
-        const deltaY = e.clientY - this.dragStartY;
-        
-        // Convert to percentage
-        const containerRect = container.getBoundingClientRect();
-        const deltaXPercent = (deltaX / containerRect.width) * 100;
-        const deltaYPercent = (deltaY / containerRect.height) * 100;
-        
-        // Calculate new position
-        const newLeft = this.overlayStartX + deltaXPercent;
-        const newTop = this.overlayStartY + deltaYPercent;
-        
-        // Apply new position
-        overlay.style.left = `${newLeft}%`;
-        overlay.style.top = `${newTop}%`;
-        
-        // Store manual position
-        this.manualPosition = { left: newLeft, top: newTop };
-    }
-    
-    handleDragEnd() {
-        if (!this.isDragging) return;
-        
-        this.isDragging = false;
-        
-        const overlay = document.getElementById('mockupOverlay');
-        overlay.classList.remove('dragging');
-        
-        if (this.manualPosition) {
-            console.log('✅ Drag ended - Manual position:', this.manualPosition);
-            
-            // Update position label
-            const posLabel = document.getElementById('logoPosition');
-            if (posLabel) {
-                posLabel.textContent = `Manuel (${Math.round(this.manualPosition.top)}%, ${Math.round(this.manualPosition.left)}%)`;
-            }
-            
-            // Deselect preset position buttons
-            document.querySelectorAll('.position-btn').forEach(b => b.classList.remove('active'));
-        }
-    }
-    
     updateMockupPosition() {
+        // Update pixel art position on mockup using CSS classes + dynamic config
         const overlay = document.getElementById('mockupOverlay');
         const overlayImg = document.getElementById('mockupPixelArt');
         if (!overlay || !overlayImg) return;
         
-        // If user has manually positioned, use that
-        if (this.manualPosition) {
-            overlay.style.left = `${this.manualPosition.left}%`;
-            overlay.style.top = `${this.manualPosition.top}%`;
-            overlay.style.transform = 'translate(-50%, -50%)';
-            
-            console.log('✅ Using manual position:', this.manualPosition);
+        // Get print area config from MOCKUP_CONFIG
+        const productConfig = window.MOCKUP_CONFIG?.[this.selectedProduct];
+        if (!productConfig) {
+            console.error('❌ No mockup config found for product:', this.selectedProduct);
             return;
         }
         
-        // Otherwise use preset position classes
-        // Remove all position classes
-        overlay.className = 'mockup-overlay draggable';
-        
-        // Add current position class
-        overlay.classList.add(`position-${this.selectedPosition}`);
-        
-        // Show overlay
-        overlay.style.display = 'flex';
-        
-        // Update position label
-        const posLabel = document.getElementById('logoPosition');
-        if (posLabel) {
-            const positionNames = {
-                'center-chest': 'Orta Göğüs',
-                'left-chest': 'Sol Göğüs',
-                'right-arm': 'Sağ Pazu',
-                'left-arm': 'Sol Pazu'
-            };
-            posLabel.textContent = positionNames[this.selectedPosition] || this.selectedPosition;
+        const printArea = productConfig.printAreas[this.selectedPosition];
+        if (!printArea) {
+            console.error('❌ No print area config found for position:', this.selectedPosition);
+            return;
         }
         
-        console.log('✅ Mockup position updated:', this.selectedPosition);
+        // Apply dynamic positioning from config
+        overlay.style.top = `${printArea.top}%`;
+        overlay.style.left = `${printArea.left}%`;
+        overlay.style.width = `${printArea.width}%`;
+        overlay.style.maxWidth = `${printArea.maxWidth}px`;
+        overlay.style.transform = printArea.transform;
+        
+        // Ensure pixel art is visible if we have a result
+        if (this.pixelArtResult) {
+            overlayImg.src = this.pixelArtResult;
+            overlay.style.display = 'block';
+            console.log(`✅ Position updated: ${this.selectedPosition} (${printArea.view} view)`);
+            console.log(`   Config: top=${printArea.top}%, left=${printArea.left}%, width=${printArea.width}%`);
+        } else {
+            overlay.style.display = 'none';
+            console.log(`📍 Position set: ${this.selectedPosition} (no pixel art yet)`);
+        }
     }
     
     handleViewChange(btn) {
@@ -2264,21 +2000,6 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         
         // Update position overlay class
         this.updateMockupPosition();
-        // Update thumbs too (keeps product cards fresh)
-        this.updateProductThumbs();
-    }
-
-    updateProductThumbs() {
-        // Use static mockups where available, fallback to SVG
-        const thumbMap = {
-            tshirt: 'mockups/center-chest.jpg',
-            sweatshirt: this.generateMockupSVG('#4a4a4a', 'Sweatshirt (Ön)', 'front'),
-            hat: this.generateMockupSVG('#1a1a1a', 'Şapka (Ön)', 'front')
-        };
-        Object.entries(this.productThumbs || {}).forEach(([key, el]) => {
-            if (!el) return;
-            el.src = thumbMap[key] || this.generateMockupSVG('#1a1a1a', key, 'front');
-        });
     }
     
     getViewForPosition(position) {
@@ -2291,28 +2012,25 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     }
     
     getMockupUrl(view = 'front') {
-        // REAL PHOTO MOCKUPS for all t-shirt colors
+        // REAL PHOTO MOCKUPS for white t-shirt
         const position = this.selectedPosition;
         const product = this.selectedProduct;
         
-        // Use real photos for t-shirt (all colors - they are white shirts, logo color varies)
-        if (product === 'tshirt') {
+        // Use real photos for white t-shirt
+        if (product === 'tshirt' && this.selectedColor === 'white') {
             const mockupMap = {
                 'center-chest': 'mockups/center-chest.jpg',      // Resim 3: Full front view
                 'left-chest': 'mockups/left-chest.jpg',          // Resim 2: Upper close-up
-                'right-arm': 'mockups/right-bicep.jpg',          // Resim 5: Left side (left sleeve visible)
-                'left-arm': 'mockups/left-bicep.jpg'             // Resim 4: Right side (right sleeve visible)
+                'right-bicep': 'mockups/right-bicep.jpg',        // Resim 5: Left side (left sleeve visible)
+                'left-bicep': 'mockups/left-bicep.jpg'           // Resim 4: Right side (right sleeve visible)
             };
             
             if (mockupMap[position]) {
                 return mockupMap[position];
             }
-            
-            // Fallback to center-chest if position not found
-            return mockupMap['center-chest'];
         }
         
-        // Fallback to SVG for other products
+        // Fallback to SVG for other colors/products
         // Color hex values
         const colors = {
             black: '#1a1a1a',
@@ -3148,7 +2866,7 @@ OUTPUT:
                 body: formData,
             });
             
-            console.log('📨 Response received:', response.status, response.statusText);
+            this.loadingBar.style.width = '80%';
             
             if (!response.ok) {
                 const errorText = await response.text();
@@ -3177,7 +2895,7 @@ OUTPUT:
         } catch (error) {
             console.error('❌ OpenAI error:', error);
             this.isProcessing = false;
-            this.updateProcessingText('❌ Hata oluştu');
+            this.updateLoadingText('❌ Hata oluştu');
             
             setTimeout(() => {
                 const errorMsg = error.message || 'OpenAI bağlantı hatası';
@@ -3185,7 +2903,7 @@ OUTPUT:
                 this.goToStep(1);
             }, 1000);
         } finally {
-            console.log('🏁 OpenAI request completed');
+            this.loadingBar.style.width = '0%';
         }
     }
     

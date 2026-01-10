@@ -1778,3 +1778,44 @@ body {
         max-width: 100% !important;
     }
 }
+
+/* ========================================
+   DRAG & DROP STYLES
+   ======================================== */
+
+.drag-hint {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: var(--surface-hover);
+    border-radius: var(--radius-sm);
+}
+
+.mockup-overlay.draggable {
+    cursor: move;
+    cursor: grab;
+    transition: box-shadow 0.2s ease;
+}
+
+.mockup-overlay.draggable:hover {
+    box-shadow: 0 0 0 2px var(--primary);
+    outline: 2px dashed var(--primary);
+    outline-offset: 2px;
+}
+
+.mockup-overlay.dragging {
+    cursor: grabbing !important;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+
+.mockup-container {
+    user-select: none;
+}
+
+#logoPosition {
+    font-weight: 600;
+    color: var(--primary);
+}

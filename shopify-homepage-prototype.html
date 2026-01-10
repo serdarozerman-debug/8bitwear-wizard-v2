@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8BitWear - Ana Sayfa Prototype (Dawn Theme Style)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #ffffff;
+            color: #000000;
+        }
+
+        /* HERO BANNER */
+        .hero-banner {
+            position: relative;
+            height: 650px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            z-index: 2;
+            max-width: 800px;
+            padding: 40px;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            line-height: 1.1;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            margin-bottom: 32px;
+            opacity: 0.95;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            padding: 18px 48px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+        }
+
+        /* COLLECTION SLIDER SECTION */
+        .collection-section {
+            padding: 80px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .collection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .collection-header h2 {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .collection-header a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .collection-header a:hover {
+            opacity: 0.7;
+        }
+
+        /* HORIZONTAL SCROLLABLE PRODUCT GRID */
+        .product-slider {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding-bottom: 16px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .product-slider::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .product-slider::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .product-slider::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        /* PRODUCT CARD - DİK DURUMDA (TEXTIL ÜRÜNLER İÇİN) */
+        .product-card {
+            min-width: 280px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            background: #f5f5f5;
+        }
+
+        .product-info {
+            padding: 16px;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #000;
+        }
+
+        .product-price {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        /* FAVORİ BUTONU */
+        .favorite-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background 0.2s;
+            z-index: 2;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .favorite-btn.active {
+            background: #ff6b6b;
+        }
+
+        .favorite-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: #ff6b6b;
+            stroke-width: 2;
+            transition: fill 0.2s;
+        }
+
+        .favorite-btn.active svg {
+            fill: white;
+            stroke: white;
+        }
+
+        /* BADGE for "Custom Design" */
+        .custom-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #ffd700;
+            color: #000;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .collection-section {
+                padding: 40px 16px;
+            }
+
+            .product-card {
+                min-width: 220px;
+            }
+
+            .product-image {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO BANNER -->
+    <section class="hero-banner">
+        <div class="hero-content">
+            <h1>Kendi Pixel Art Tasarımını Yarat</h1>
+            <p>Fotoğrafını yükle, AI ile pixel art'a dönüştür ve özel tasarımlı ürünlere sahip ol!</p>
+            <a href="#" class="hero-cta">Hemen Tasarla →</a>
+        </div>
+    </section>
+
+    <!-- 1) KENDİ TASARIMINI YAP -->
+    <section class="collection-section">
+        <div class="collection-header">
+            <h2>🎨 Kendi Tasarımını Yap</h2>
+            <a href="#">Tümünü Gör →</a>
+        </div>
+        <div class="product-slider">
+            <!-- Custom Design Products -->
+            <div class="product-card">
+                <div class="custom-badge">⭐ CUSTOM</div>
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                    🎨
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Özel Tasarım T-Shirt</div>
+                    <div class="product-price">₺299</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="custom-badge">⭐ CUSTOM</div>
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                    👕
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Özel Tasarım Sweatshirt</div>
+                    <div class="product-price">₺449</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="custom-badge">⭐ CUSTOM</div>
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                    🧢
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Özel Tasarım Şapka</div>
+                    <div class="product-price">₺199</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2) EN SEVİLENLER -->
+    <section class="collection-section" style="background: #f9f9f9;">
+        <div class="collection-header">
+            <h2>❤️ En Sevilenler</h2>
+            <a href="#">Tümünü Gör →</a>
+        </div>
+        <div class="product-slider">
+            <div class="product-card">
+                <button class="favorite-btn active">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: #1a1a1a; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                    😎
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Cool Pixel Tee</div>
+                    <div class="product-price">₺279</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: white; display: flex; align-items: center; justify-content: center; color: black; font-size: 2rem; border: 2px solid #f0f0f0;">
+                    🎮
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Retro Gaming T-Shirt</div>
+                    <div class="product-price">₺289</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: #667eea; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                    🚀
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Space Pixel Hoodie</div>
+                    <div class="product-price">₺449</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: #ff6b6b; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                    ❤️
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Love Pixel T-Shirt</div>
+                    <div class="product-price">₺269</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3) MODERATÖRÜN SEÇTİKLERİ -->
+    <section class="collection-section">
+        <div class="collection-header">
+            <h2>⭐ Moderatörün Seçtikleri</h2>
+            <a href="#">Tümünü Gör →</a>
+        </div>
+        <div class="product-slider">
+            <div class="product-card">
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: linear-gradient(to bottom, #ffeaa7, #fdcb6e); display: flex; align-items: center; justify-content: center; color: #2d3436; font-size: 2rem;">
+                    👑
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Premium Selection Tee</div>
+                    <div class="product-price">₺329</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: linear-gradient(to bottom, #74b9ff, #0984e3); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                    🌟
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Editor's Pick Hoodie</div>
+                    <div class="product-price">₺479</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: linear-gradient(to bottom, #fab1a0, #e17055); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                    🔥
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Hot Pick T-Shirt</div>
+                    <div class="product-price">₺299</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4) KAMPANYA ÜRÜNLERİ -->
+    <section class="collection-section" style="background: #fff3cd;">
+        <div class="collection-header">
+            <h2>🎉 Kampanya Ürünleri</h2>
+            <a href="#">Tümünü Gör →</a>
+        </div>
+        <div class="product-slider">
+            <div class="product-card">
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: #d63031; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                    -30%
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Sale Pixel Tee</div>
+                    <div class="product-price"><s style="color: #999; font-size: 0.9rem;">₺399</s> ₺279</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: #00b894; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                    -25%
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Discount Hoodie</div>
+                    <div class="product-price"><s style="color: #999; font-size: 0.9rem;">₺599</s> ₺449</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5) ÖZEL KONSEPTLER (Yeni Yıl, Şampiyon) -->
+    <section class="collection-section">
+        <div class="collection-header">
+            <h2>🎊 Özel Konseptler</h2>
+            <a href="#">Tümünü Gör →</a>
+        </div>
+        <div class="product-slider">
+            <div class="product-card">
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: linear-gradient(135deg, #ffd700, #ff6347); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                    🎆
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Yeni Yıl 2026 T-Shirt</div>
+                    <div class="product-price">₺299</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: linear-gradient(135deg, #ffeb3b, #4caf50); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                    🏆
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Şampiyon Özel T-Shirt</div>
+                    <div class="product-price">₺349</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: linear-gradient(135deg, #ff6b6b, #feca57); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                    ⚽
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Futbol Konsept Hoodie</div>
+                    <div class="product-price">₺479</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6) SENİN İÇİN SEÇTİKLERİMİZ -->
+    <section class="collection-section" style="background: #e8f5e9;">
+        <div class="collection-header">
+            <h2>💚 Senin İçin Seçtiklerimiz</h2>
+            <a href="#">Tümünü Gör →</a>
+        </div>
+        <div class="product-slider">
+            <div class="product-card">
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: linear-gradient(to bottom right, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                    🎁
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Tavsiye T-Shirt</div>
+                    <div class="product-price">₺289</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <button class="favorite-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+                <div class="product-image" style="background: linear-gradient(to bottom right, #4facfe, #00f2fe); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                    🎈
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Önerilen Hoodie</div>
+                    <div class="product-price">₺459</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Favori buton interaksiyon
+        document.querySelectorAll('.favorite-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                btn.classList.toggle('active');
+            });
+        });
+
+        // Product card click
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('click', () => {
+                alert('Ürün sayfasına yönlendiriliyorsunuz...');
+            });
+        });
+    </script>
+
+</body>
+</html>
+

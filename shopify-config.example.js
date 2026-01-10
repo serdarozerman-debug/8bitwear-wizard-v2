@@ -6,3 +6,4 @@ const SHOPIFY_CONFIG = {
     PROXY_URL: 'http://localhost:3001' // Change to production URL when deployed
 };
 
+
