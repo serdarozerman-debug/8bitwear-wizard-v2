@@ -2283,8 +2283,8 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
     
     getViewForPosition(position) {
         // Pazu pozisyonları için yan görünüm
-        if (position === 'left-bicep' || position === 'right-bicep') {
-            return position === 'left-bicep' ? 'side-left' : 'side-right';
+        if (position === 'left-arm' || position === 'right-arm') {
+            return position === 'left-arm' ? 'side-left' : 'side-right';
         }
         // Göğüs pozisyonları için ön görünüm
         return 'front';

@@ -1819,3 +1819,12 @@ body {
     font-weight: 600;
     color: var(--primary);
 }
+
+/* Fix pointer events for draggable overlay */
+.mockup-overlay.draggable {
+    pointer-events: auto !important;
+}
+
+.mockup-overlay.dragging {
+    pointer-events: auto !important;
+}
