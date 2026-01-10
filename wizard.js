@@ -93,7 +93,7 @@ window.MOCKUP_CONFIG = {
                 view: 'front'
             },
             // RIGHT BICEP - 0.1 boy sola kaydırıldı
-            'right-arm': {
+            'right-bicep': {
                 top: 36,        // Sabit
                 left: 49.6,     // 0.1 boy sola (50.5 - 0.9 = 49.6)
                 width: 9,       // Sabit
@@ -102,7 +102,7 @@ window.MOCKUP_CONFIG = {
                 view: 'side-left'
             },
             // LEFT BICEP - 0.7 boy sola kaydırıldı
-            'left-arm': {
+            'left-bicep': {
                 top: 32.5,      // Yarım boy yukarı (sabit)
                 left: 53.1,     // 0.7 boy sola (58 - 4.9 = 53.1)
                 width: 7,       // Logo boyutunda
@@ -130,7 +130,7 @@ window.MOCKUP_CONFIG = {
                 transform: 'translate(-50%, 0)',
                 view: 'front'
             },
-            'right-arm': {
+            'right-bicep': {
                 top: 35,
                 left: 65,
                 width: 16,
@@ -138,7 +138,7 @@ window.MOCKUP_CONFIG = {
                 transform: 'translate(-50%, 0) rotate(-5deg)',
                 view: 'side-right'
             },
-            'left-arm': {
+            'left-bicep': {
                 top: 35,
                 left: 35,
                 width: 16,
@@ -223,14 +223,14 @@ class PixelWizard {
             tshirt: [
                 { id: 'center-chest', name: 'Orta Göğüs', icon: '▣' },
                 { id: 'left-chest', name: 'Sol Göğüs', icon: '◤' },
-                { id: 'right-arm', name: 'Sağ Pazu', icon: '▶' },
-                { id: 'left-arm', name: 'Sol Pazu', icon: '◀' }
+                { id: 'right-bicep', name: 'Sağ Pazu', icon: '▶' },
+                { id: 'left-bicep', name: 'Sol Pazu', icon: '◀' }
             ],
             sweatshirt: [
                 { id: 'center-chest', name: 'Orta Göğüs', icon: '▣' },
                 { id: 'left-chest', name: 'Sol Göğüs', icon: '◤' },
-                { id: 'right-arm', name: 'Sağ Pazu', icon: '▶' },
-                { id: 'left-arm', name: 'Sol Pazu', icon: '◀' }
+                { id: 'right-bicep', name: 'Sağ Pazu', icon: '▶' },
+                { id: 'left-bicep', name: 'Sol Pazu', icon: '◀' }
             ],
             hat: [
                 { id: 'front', name: 'Ön', icon: '◉' },
@@ -2020,7 +2020,8 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
             const positions = this.productPositions[this.selectedProduct];
             positions.forEach((pos, i) => {
                 const btn = document.createElement('button');
-                btn.className = 'position-btn' + (i === 0 ? ' active' : '');
+                // Set active based on current selectedPosition
+                btn.className = 'position-btn' + (pos.id === this.selectedPosition ? ' active' : '');
                 btn.dataset.position = pos.id;
                 btn.innerHTML = `
                     <span class="position-icon">${pos.icon}</span>
@@ -2029,10 +2030,6 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
                 btn.addEventListener('click', () => this.handlePositionChange(btn));
                 positionOptions.appendChild(btn);
             });
-            // Set default position
-            if (positions.length > 0) {
-                this.selectedPosition = positions[0].id;
-            }
         }
     }
     
@@ -2048,7 +2045,8 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
         // Create position buttons
         positions.forEach((pos, index) => {
             const btn = document.createElement('button');
-            btn.className = 'position-btn' + (index === 0 ? ' active' : '');
+            // Set active based on current selectedPosition
+            btn.className = 'position-btn' + (pos.id === this.selectedPosition ? ' active' : '');
             btn.dataset.position = pos.id;
             btn.innerHTML = `
                 <span class="position-icon">${pos.icon}</span>
@@ -2057,11 +2055,6 @@ IF RESULT has sprite sheet/multiple characters/palette chart = WRONG`);
             btn.addEventListener('click', () => this.handlePositionChange(btn));
             positionSelector.appendChild(btn);
         });
-        
-        // Set default position
-        if (positions.length > 0) {
-            this.selectedPosition = positions[0].id;
-        }
     }
     
     handlePositionChange(btn) {
