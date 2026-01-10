@@ -93,7 +93,7 @@ window.MOCKUP_CONFIG = {
                 view: 'front'
             },
             // RIGHT BICEP - 0.1 boy sola kaydırıldı
-            'right-bicep': {
+            'right-arm': {
                 top: 36,        // Sabit
                 left: 49.6,     // 0.1 boy sola (50.5 - 0.9 = 49.6)
                 width: 9,       // Sabit
@@ -102,7 +102,7 @@ window.MOCKUP_CONFIG = {
                 view: 'side-left'
             },
             // LEFT BICEP - 0.7 boy sola kaydırıldı
-            'left-bicep': {
+            'left-arm': {
                 top: 32.5,      // Yarım boy yukarı (sabit)
                 left: 53.1,     // 0.7 boy sola (58 - 4.9 = 53.1)
                 width: 7,       // Logo boyutunda
@@ -130,7 +130,7 @@ window.MOCKUP_CONFIG = {
                 transform: 'translate(-50%, 0)',
                 view: 'front'
             },
-            'right-bicep': {
+            'right-arm': {
                 top: 35,
                 left: 65,
                 width: 16,
@@ -138,7 +138,7 @@ window.MOCKUP_CONFIG = {
                 transform: 'translate(-50%, 0) rotate(-5deg)',
                 view: 'side-right'
             },
-            'left-bicep': {
+            'left-arm': {
                 top: 35,
                 left: 35,
                 width: 16,
@@ -223,14 +223,14 @@ class PixelWizard {
             tshirt: [
                 { id: 'center-chest', name: 'Orta Göğüs', icon: '▣' },
                 { id: 'left-chest', name: 'Sol Göğüs', icon: '◤' },
-                { id: 'right-bicep', name: 'Sağ Pazu', icon: '▶' },
-                { id: 'left-bicep', name: 'Sol Pazu', icon: '◀' }
+                { id: 'right-arm', name: 'Sağ Pazu', icon: '▶' },
+                { id: 'left-arm', name: 'Sol Pazu', icon: '◀' }
             ],
             sweatshirt: [
                 { id: 'center-chest', name: 'Orta Göğüs', icon: '▣' },
                 { id: 'left-chest', name: 'Sol Göğüs', icon: '◤' },
-                { id: 'right-bicep', name: 'Sağ Pazu', icon: '▶' },
-                { id: 'left-bicep', name: 'Sol Pazu', icon: '◀' }
+                { id: 'right-arm', name: 'Sağ Pazu', icon: '▶' },
+                { id: 'left-arm', name: 'Sol Pazu', icon: '◀' }
             ],
             hat: [
                 { id: 'front', name: 'Ön', icon: '◉' },
